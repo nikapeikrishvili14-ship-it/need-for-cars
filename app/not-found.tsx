@@ -9,7 +9,7 @@ export default async function NotFound() {
 
   return (
     <html lang={routing.defaultLocale} className={fontVariables}>
-      <body className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-night px-4 font-sans text-fg antialiased">
+      <body suppressHydrationWarning className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-night px-4 font-sans text-fg antialiased">
         <p className="font-heading text-7xl font-black italic text-accent">404</p>
         <h1 className="text-2xl font-bold italic">{t("title")}</h1>
         <a

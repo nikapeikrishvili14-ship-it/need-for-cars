@@ -33,7 +33,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
 
   return (
     <html lang={locale} className={fontVariables}>
-      <body className="flex min-h-dvh flex-col bg-night font-sans text-fg antialiased">
+      {/* Browser extensions (e.g. Grammarly) add attributes to <body> before hydration */}
+      <body suppressHydrationWarning className="flex min-h-dvh flex-col bg-night font-sans text-fg antialiased">
         <NextIntlClientProvider>
           <Header />
           <main className="flex-1">{children}</main>

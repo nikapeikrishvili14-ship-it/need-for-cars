@@ -30,13 +30,94 @@
     "label": "Написать нам в WhatsApp"
   },
   "pages": {
-    "home": { "title": "Арендуйте машину своей мечты" },
-    "cars": { "title": "Наши автомобили" },
-    "book": { "title": "Бронирование" },
-    "findACar": { "title": "Подберите мне авто" },
-    "about": { "title": "О компании" },
-    "faq": { "title": "Частые вопросы" },
-    "contact": { "title": "Связаться с нами" }
+    "home": {
+      "title": "Арендуйте машину своей мечты"
+    },
+    "cars": {
+      "title": "Наши автомобили"
+    },
+    "book": {
+      "title": "Бронирование"
+    },
+    "findACar": {
+      "title": "Подберите мне авто"
+    },
+    "about": {
+      "title": "О компании"
+    },
+    "faq": {
+      "title": "Частые вопросы"
+    },
+    "contact": {
+      "title": "Связаться с нами"
+    }
+  },
+  "price": {
+    "approx": "прибл.",
+    "perDay": "/ сутки"
+  },
+  "car": {
+    "types": {
+      "sports": "Спорткар",
+      "suv": "Люкс-внедорожник"
+    },
+    "transmissions": {
+      "automatic": "Автомат",
+      "manual": "Механика"
+    },
+    "fuels": {
+      "petrol": "Бензин",
+      "diesel": "Дизель",
+      "hybrid": "Гибрид",
+      "electric": "Электро"
+    },
+    "seats": "{count, plural, one {# место} few {# места} many {# мест} other {# места}}",
+    "years": "{count, plural, one {# год} few {# года} many {# лет} other {# года}}",
+    "units": {
+      "hp": "{value, number} л.с.",
+      "seconds": "{value, number} с",
+      "kmh": "{value, number} км/ч"
+    },
+    "specs": {
+      "title": "Характеристики",
+      "engine": "Двигатель",
+      "power": "Мощность",
+      "acceleration": "0–100 км/ч",
+      "topSpeed": "Макс. скорость",
+      "transmission": "Коробка передач",
+      "drive": "Привод",
+      "fuel": "Топливо",
+      "seats": "Мест",
+      "year": "Год"
+    },
+    "performance": "Динамика",
+    "performanceNote": "В сравнении с самым мощным автомобилем нашего автопарка",
+    "requirements": "Требования к водителю",
+    "minAge": "Минимальный возраст",
+    "minExperience": "Стаж вождения",
+    "deposit": "Возвратный депозит {amount}, возвращается через 1 рабочий день после возврата автомобиля. Не входит в стоимость аренды.",
+    "insurance": "Все наши автомобили застрахованы.",
+    "book": "Забронировать этот автомобиль",
+    "back": "Все автомобили",
+    "details": "Подробнее",
+    "photo": "Фото {n} из {total}",
+    "showPhoto": "Показать фото {n}",
+    "prevPhoto": "Предыдущее фото",
+    "nextPhoto": "Следующее фото"
+  },
+  "catalogue": {
+    "filters": "Фильтры",
+    "type": "Тип",
+    "transmission": "Коробка передач",
+    "seats": "Мест",
+    "seatsMin": "{count}+",
+    "price": "Цена за сутки",
+    "priceFrom": "От",
+    "priceTo": "До",
+    "all": "Все",
+    "results": "{count, plural, one {# автомобиль} few {# автомобиля} many {# автомобилей} other {# автомобиля}}",
+    "reset": "Сбросить фильтры",
+    "empty": "Нет автомобилей с такими параметрами."
   },
   "notFound": {
     "title": "Страница не найдена",

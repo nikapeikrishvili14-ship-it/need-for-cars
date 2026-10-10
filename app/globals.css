@@ -37,9 +37,37 @@ h3 {
   font-synthesis-style: none;
 }
 
-/* Logo's forward slant as a motif: parallelogram buttons/badges */
+/* Logo's forward slant as a motif: parallelogram buttons/badges/bars.
+   Skew (not clip-path) so box-shadow glows still show. Wrap text inside
+   in .unslant to keep it upright. */
 @utility slant {
-  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  transform: skewX(-12deg);
+}
+
+@utility unslant {
+  display: inline-block;
+  transform: skewX(12deg);
+}
+
+/* Angled bottom edge for card/photo frames */
+@utility edge-angled {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), 0 100%);
+}
+
+/* One-time fill animation for stat bars */
+@keyframes bar-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@utility animate-bar-fill {
+  transform-origin: left;
+  animation: bar-fill 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+input[type="range"] {
+  accent-color: var(--color-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {

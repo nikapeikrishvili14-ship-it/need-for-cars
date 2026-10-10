@@ -30,13 +30,94 @@
     "label": "Chat with us on WhatsApp"
   },
   "pages": {
-    "home": { "title": "Rent the car you've always wanted" },
-    "cars": { "title": "Our cars" },
-    "book": { "title": "Book a car" },
-    "findACar": { "title": "Find me a car" },
-    "about": { "title": "About us" },
-    "faq": { "title": "Frequently asked questions" },
-    "contact": { "title": "Contact us" }
+    "home": {
+      "title": "Rent the car you've always wanted"
+    },
+    "cars": {
+      "title": "Our cars"
+    },
+    "book": {
+      "title": "Book a car"
+    },
+    "findACar": {
+      "title": "Find me a car"
+    },
+    "about": {
+      "title": "About us"
+    },
+    "faq": {
+      "title": "Frequently asked questions"
+    },
+    "contact": {
+      "title": "Contact us"
+    }
+  },
+  "price": {
+    "approx": "approx.",
+    "perDay": "/ day"
+  },
+  "car": {
+    "types": {
+      "sports": "Sports car",
+      "suv": "Luxury SUV"
+    },
+    "transmissions": {
+      "automatic": "Automatic",
+      "manual": "Manual"
+    },
+    "fuels": {
+      "petrol": "Petrol",
+      "diesel": "Diesel",
+      "hybrid": "Hybrid",
+      "electric": "Electric"
+    },
+    "seats": "{count, plural, one {# seat} other {# seats}}",
+    "years": "{count, plural, one {# year} other {# years}}",
+    "units": {
+      "hp": "{value, number} hp",
+      "seconds": "{value, number} s",
+      "kmh": "{value, number} km/h"
+    },
+    "specs": {
+      "title": "Specifications",
+      "engine": "Engine",
+      "power": "Power",
+      "acceleration": "0–100 km/h",
+      "topSpeed": "Top speed",
+      "transmission": "Transmission",
+      "drive": "Drive",
+      "fuel": "Fuel",
+      "seats": "Seats",
+      "year": "Year"
+    },
+    "performance": "Performance",
+    "performanceNote": "Compared with the strongest car in our fleet",
+    "requirements": "Driver requirements",
+    "minAge": "Minimum age",
+    "minExperience": "Driving experience",
+    "deposit": "Refundable deposit of {amount}, returned 1 working day after you return the car. Not included in the rental price.",
+    "insurance": "All our cars are insured.",
+    "book": "Book this car",
+    "back": "All cars",
+    "details": "View details",
+    "photo": "Photo {n} of {total}",
+    "showPhoto": "Show photo {n}",
+    "prevPhoto": "Previous photo",
+    "nextPhoto": "Next photo"
+  },
+  "catalogue": {
+    "filters": "Filters",
+    "type": "Type",
+    "transmission": "Transmission",
+    "seats": "Seats",
+    "seatsMin": "{count}+",
+    "price": "Price per day",
+    "priceFrom": "From",
+    "priceTo": "To",
+    "all": "All",
+    "results": "{count, plural, one {# car} other {# cars}}",
+    "reset": "Reset filters",
+    "empty": "No cars match these filters."
   },
   "notFound": {
     "title": "Page not found",

@@ -16,7 +16,7 @@ export default async function NotFound() {
           href={`/${routing.defaultLocale}/`}
           className="slant bg-accent px-6 py-3 font-semibold text-night"
         >
-          {t("back")}
+          <span className="unslant">{t("back")}</span>
         </a>
       </body>
     </html>

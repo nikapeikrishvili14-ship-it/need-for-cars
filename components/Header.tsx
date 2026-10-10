@@ -26,7 +26,7 @@ export default async function Header() {
             href="/book"
             className="slant ml-2 bg-accent px-5 py-2 text-sm font-semibold text-night transition-shadow hover:shadow-glow"
           >
-            {t("book")}
+            <span className="unslant">{t("book")}</span>
           </Link>
         </div>
 

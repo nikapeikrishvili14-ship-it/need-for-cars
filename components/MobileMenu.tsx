@@ -50,7 +50,7 @@ export default function MobileMenu() {
             onClick={close}
             className="slant mt-6 block bg-accent py-3 text-center font-semibold text-night shadow-glow"
           >
-            {t("book")}
+            <span className="unslant">{t("book")}</span>
           </Link>
         </div>
       )}

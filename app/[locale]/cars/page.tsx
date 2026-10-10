@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import PageTitle from "@/components/PageTitle";
+import CarCatalogue from "@/components/CarCatalogue";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/cars">): Promise<Metadata> {
   const { locale } = await params;
@@ -13,5 +14,10 @@ export default async function CarsPage({ params }: PageProps<"/[locale]/cars">) 
   setRequestLocale(locale);
   const t = await getTranslations("pages.cars");
 
-  return <PageTitle>{t("title")}</PageTitle>;
+  return (
+    <>
+      <PageTitle>{t("title")}</PageTitle>
+      <CarCatalogue />
+    </>
+  );
 }

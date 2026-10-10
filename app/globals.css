@@ -1,26 +1,52 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Brand tokens → Tailwind utilities:
+   bg-night, bg-surface, text-fg, text-muted, text-accent, border-line,
+   font-heading, font-sans */
+@theme {
+  --color-night: #0b0b0d;
+  --color-surface: #16161a;
+  --color-fg: #f5f5f5;
+  --color-muted: #8a8a93;
+  --color-accent: #ff5a1f;
+  --color-line: #26262c;
+
+  --font-heading: var(--font-exo2), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-glow: 0 0 24px -4px rgb(255 90 31 / 0.55);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-night);
+  color: var(--color-fg);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+}
+
+/* Georgian has no italic — keep it upright instead of a faked slant */
+:lang(ka) {
+  font-synthesis-style: none;
+}
+
+/* Logo's forward slant as a motif: parallelogram buttons/badges */
+@utility slant {
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

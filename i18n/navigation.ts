@@ -1,0 +1,6 @@
+import { createNavigation } from "next-intl/navigation";
+import { routing } from "./routing";
+
+// Locale-aware wrappers around next/link and next/navigation
+export const { Link, usePathname, useRouter, getPathname } =
+  createNavigation(routing);

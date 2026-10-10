@@ -52,6 +52,82 @@
       "title": "Contact us"
     }
   },
+  "home": {
+    "hero": {
+      "subtitle": "Sports cars and luxury SUVs in Georgia. We bring the car to your hotel or meet you at the airport.",
+      "browse": "Browse cars"
+    },
+    "garage": {
+      "title": "Choose your car",
+      "intro": "Swipe or use the arrows to compare each car's numbers.",
+      "prev": "Previous car",
+      "next": "Next car",
+      "slide": "Car {n} of {total}",
+      "show": "Show {car}",
+      "soundOn": "Turn engine sound on",
+      "soundOff": "Turn engine sound off",
+      "view": "View car",
+      "book": "Book"
+    },
+    "why": {
+      "title": "Why rent with us",
+      "intro": "Renting a sports car on a trip should be simple. Here's how we keep it that way.",
+      "delivery": {
+        "title": "Delivered where you are",
+        "text": "We bring the car to your hotel, your home or the airport."
+      },
+      "insured": {
+        "title": "Every car insured",
+        "text": "Every car in the fleet is insured. Ask us for the policy details."
+      },
+      "deposit": {
+        "title": "Small deposit, quick refund",
+        "text": "Only <amount></amount>, returned 1 working day after you bring the car back."
+      },
+      "request": {
+        "title": "No online payment",
+        "text": "Send a request and we confirm by phone or WhatsApp. Nothing to pay online."
+      }
+    },
+    "steps": {
+      "title": "How renting works",
+      "intro": "From choosing a car to getting the keys in four steps.",
+      "choose": {
+        "title": "Choose a car",
+        "text": "Browse the fleet and pick the car for your trip."
+      },
+      "request": {
+        "title": "Send a request",
+        "text": "Fill in the booking form or message us on WhatsApp."
+      },
+      "confirm": {
+        "title": "We confirm",
+        "text": "We check availability and confirm your dates and the final price."
+      },
+      "drive": {
+        "title": "Get the keys",
+        "text": "We hand over the car at the agreed place. Your deposit comes back 1 working day after you return it."
+      }
+    },
+    "delivery": {
+      "title": "Where we deliver",
+      "intro": "Pick up and drop off the car in any of these places.",
+      "fee": "Delivery <amount></amount>",
+      "custom": "Need a different address, like your hotel? Pickup or drop-off there costs <amount></amount>."
+    },
+    "reviews": {
+      "title": "What drivers say",
+      "rating": "{rating} out of 5",
+      "empty": "Reviews from our customers will appear here soon. Rented with us? We'd love to hear how it went.",
+      "share": "Share your experience",
+      "shareMessage": "Hello! I rented a car from you and would like to leave a review:"
+    },
+    "cta": {
+      "title": "Your car is ready when you are",
+      "text": "Tell us your dates and we'll confirm availability.",
+      "find": "Find me a car"
+    }
+  },
   "price": {
     "approx": "approx.",
     "perDay": "/ day",

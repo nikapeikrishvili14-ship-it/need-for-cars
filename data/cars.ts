@@ -30,6 +30,14 @@ export type Car = {
   description: Localized;
   /** Paths under /public, first one is the cover */
   photos: string[];
+  /**
+   * Transparent cut-out of the car (side or 3/4 view, PNG/WebP/SVG) for the
+   * garage scenes: home hero, car selector, catalogue cards. Without it the
+   * first photo is shown instead.
+   */
+  stage?: string;
+  /** Short engine clip (1–2 s), played on switch when the visitor turns sound on */
+  sound?: string;
   featured: boolean;
 };
 
@@ -62,6 +70,8 @@ export const cars: Car[] = [
       ru: "Настоящий спорткар для горных дорог и ночных поездок.",
     },
     photos: ["/cars/porsche-911-carrera/1.svg", "/cars/porsche-911-carrera/2.svg"],
+    stage: "/cars/porsche-911-carrera/stage.svg", // TODO(owner): transparent cut-out photo, e.g. stage.webp
+    sound: "/sounds/porsche-911-carrera.mp3", // TODO(owner): add this engine clip (a synth placeholder plays until then)
     featured: true,
   },
   {
@@ -90,6 +100,8 @@ export const cars: Car[] = [
       ru: "Легенда, которой одинаково по силам городские улицы и горные перевалы.",
     },
     photos: ["/cars/mercedes-amg-g63/1.svg", "/cars/mercedes-amg-g63/2.svg"],
+    stage: "/cars/mercedes-amg-g63/stage.svg", // TODO(owner): transparent cut-out photo, e.g. stage.webp
+    sound: "/sounds/mercedes-amg-g63.mp3", // TODO(owner): add this engine clip (a synth placeholder plays until then)
     featured: true,
   },
   {
@@ -118,6 +130,8 @@ export const cars: Car[] = [
       ru: "Комфортный люксовый внедорожник для дальних поездок по Грузии.",
     },
     photos: ["/cars/range-rover-sport/1.svg", "/cars/range-rover-sport/2.svg"],
+    stage: "/cars/range-rover-sport/stage.svg", // TODO(owner): transparent cut-out photo, e.g. stage.webp
+    sound: "/sounds/range-rover-sport.mp3", // TODO(owner): add this engine clip (a synth placeholder plays until then)
     featured: true,
   },
 ];

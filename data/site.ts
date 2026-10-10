@@ -46,6 +46,26 @@ export type SiteConfig = {
   currencyRates: Record<CurrencyCode, number>;
   terms: Localized[];
   faq: FaqItem[];
+  /**
+   * Home hero background. Leave both empty to show the built-in garage scene
+   * with the first featured car. A video wins over an image.
+   */
+  hero: {
+    /** Short muted loop, e.g. /hero/garage.mp4 (keep it under ~4 MB) */
+    video?: string;
+    /** Still photo; also used as the video's poster frame */
+    image?: string;
+  };
+  reviews: Review[];
+};
+
+export type Review = {
+  name: string;
+  /** Where the customer is from, e.g. "Germany" */
+  from: Localized;
+  text: Localized;
+  /** 1–5 */
+  rating: number;
 };
 
 export const site: SiteConfig = {
@@ -115,4 +135,13 @@ export const site: SiteConfig = {
       },
     },
   ],
+  hero: {
+    video: undefined, // TODO(owner): e.g. "/hero/garage.mp4" — short muted loop
+    image: undefined, // TODO(owner): e.g. "/hero/garage.webp" — dark, car lit from above
+  },
+  // TODO(owner): add real customer reviews. The home page shows a
+  // "reviews coming soon" note while this list is empty. Example:
+  // { name: "Anna", from: { en: "Germany", ka: "გერმანია", ru: "Германия" },
+  //   text: { en: "...", ka: "...", ru: "..." }, rating: 5 },
+  reviews: [],
 };

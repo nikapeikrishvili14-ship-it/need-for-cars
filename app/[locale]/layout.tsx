@@ -7,6 +7,7 @@ import { fontVariables } from "@/lib/fonts";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import MotionProvider from "@/components/MotionProvider";
 
 // Only /en, /ka, /ru exist — everything is prerendered at build time
 export const dynamicParams = false;
@@ -36,10 +37,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       {/* Browser extensions (e.g. Grammarly) add attributes to <body> before hydration */}
       <body suppressHydrationWarning className="flex min-h-dvh flex-col bg-night font-sans text-fg antialiased">
         <NextIntlClientProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <WhatsAppButton />
+          <MotionProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <WhatsAppButton />
+          </MotionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

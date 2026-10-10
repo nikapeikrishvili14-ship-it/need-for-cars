@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ChevronLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { cars, getCar } from "@/data/cars";
@@ -50,8 +51,9 @@ export default async function CarPage({ params }: PageProps<"/[locale]/cars/[slu
 
   return (
     <div className="mx-auto max-w-7xl px-4 pt-6 lg:px-8 lg:pt-10">
-      <Link href="/cars" className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent">
-        ← {t("back")}
+      <Link href="/cars" className="inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-accent">
+        <ChevronLeft size={16} aria-hidden="true" />
+        {t("back")}
       </Link>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-12">
@@ -96,7 +98,7 @@ export default async function CarPage({ params }: PageProps<"/[locale]/cars/[slu
 
             <Link
               href={{ pathname: "/book", query: { car: car.slug } }}
-              className="slant mt-6 block bg-accent py-3.5 text-center font-semibold text-night transition-shadow hover:shadow-glow"
+              className="slant mt-6 block bg-accent py-3.5 text-center font-semibold text-night transition-shadow hover:shadow-glow-strong"
             >
               <span className="unslant">{t("book")}</span>
             </Link>

@@ -15,7 +15,7 @@ export default async function WhyUs() {
   const t = await getTranslations("home.why");
 
   return (
-    <Section labelledBy="why-title">
+    <Section tone="surface" overlap={false} labelledBy="why-title">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <SectionHeading id="why-title" title={t("title")} intro={t("intro")} />
 

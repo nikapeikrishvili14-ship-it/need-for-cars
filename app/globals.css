@@ -107,12 +107,49 @@ input[type="range"] {
     radial-gradient(ellipse 70% 14% at 50% 70%, rgb(59 167 255 / 0.07), transparent 75%);
 }
 
-/* Glossy floor with a pool of light under the lamp */
+/* Glossy floor: horizon line, the lamp's pool of light and its streak on the
+   polished surface. Ends in the base tone so it melts into the next section. */
 .studio-floor {
   background:
-    radial-gradient(ellipse 38% 55% at var(--focus-x, 50%) 0%, rgb(255 255 255 / 0.075), transparent 70%),
-    linear-gradient(to bottom, #121216, #070708 85%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+    linear-gradient(
+        to right,
+        transparent 8%,
+        rgb(255 255 255 / 0.16) var(--focus-x, 50%),
+        transparent 92%
+      )
+      top / 100% 1px no-repeat,
+    radial-gradient(ellipse 7% 85% at var(--focus-x, 50%) 0%, rgb(255 255 255 / 0.06), transparent 70%),
+    radial-gradient(ellipse 32% 50% at var(--focus-x, 50%) 0%, rgb(255 255 255 / 0.1), transparent 70%),
+    radial-gradient(ellipse 55% 35% at var(--focus-x, 50%) 0%, rgb(59 167 255 / 0.07), transparent 70%),
+    linear-gradient(to bottom, #131317, var(--color-night) 75%);
+}
+
+/* Soft dark patch where the tyres meet the floor */
+.contact-shadow {
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.8), transparent);
+}
+
+/* Logo: logo.png is a white wordmark on solid black. A luminance mask keeps
+   only the white, so the black is truly transparent on any background.
+   Crop maths in components/Logo.tsx. Fallback: the <img> with screen blending. */
+.logo-mark {
+  display: none;
+}
+
+@supports (mask-mode: luminance) {
+  .logo-mark {
+    display: block;
+    background: #fff;
+    mask-image: url("/brand/logo.png");
+    mask-mode: luminance;
+    mask-repeat: no-repeat;
+    mask-size: 141.92% auto;
+    mask-position: 49.26% 50.43%;
+  }
+
+  .logo-fallback {
+    display: none;
+  }
 }
 
 /* Slow drifting haze — desktop only, and not with reduced motion */

@@ -1,6 +1,9 @@
-import { cars } from "@/data/cars";
+import { cars, type CarType, type Transmission } from "@/data/cars";
 
-// Fleet-wide numbers used to scale stat bars and the price filter.
+const allTypes: CarType[] = ["sports", "suv"];
+const allTransmissions: Transmission[] = ["automatic", "manual"];
+
+// Fleet-wide numbers used to scale stat bars and build the catalogue filters.
 // Recomputed from data/cars.ts at build time, so adding a car updates them.
 export const fleet = {
   maxHp: Math.max(...cars.map((c) => c.specs.hp)),
@@ -9,6 +12,12 @@ export const fleet = {
   bestAcceleration: Math.min(...cars.map((c) => c.specs.acceleration)),
   minPrice: Math.min(...cars.map((c) => c.pricePerDay)),
   maxPrice: Math.max(...cars.map((c) => c.pricePerDay)),
-  /** Distinct seat counts, ascending — used for the "N+ seats" filter */
-  seatOptions: [...new Set(cars.map((c) => c.seats))].sort((a, b) => a - b),
+  /** Only types/transmissions at least one car has, so no filter shows zero results */
+  types: allTypes.filter((type) => cars.some((c) => c.type === type)),
+  transmissions: allTransmissions.filter((tr) => cars.some((c) => c.transmission === tr)),
+  /**
+   * "N+ seats" choices, ascending. The smallest seat count is left out:
+   * it matches every car, so it would do the same as "All".
+   */
+  seatOptions: [...new Set(cars.map((c) => c.seats))].sort((a, b) => a - b).slice(1),
 };

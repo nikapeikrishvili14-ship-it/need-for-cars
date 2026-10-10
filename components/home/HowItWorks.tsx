@@ -7,7 +7,7 @@ export default async function HowItWorks() {
   const t = await getTranslations("home.steps");
 
   return (
-    <Section tone="surface" labelledBy="steps-title">
+    <Section labelledBy="steps-title">
       <SectionHeading id="steps-title" title={t("title")} intro={t("intro")} />
 
       <ol className="mt-12 grid gap-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-8">

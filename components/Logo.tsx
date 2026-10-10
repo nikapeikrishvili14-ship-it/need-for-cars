@@ -13,13 +13,19 @@ export default function Logo({ className = "w-28" }: { className?: string }) {
       aria-label="Need for Cars"
       className={`relative block aspect-[1443/533] shrink-0 overflow-hidden ${className}`}
     >
+      {/* Same crop as a CSS mask (globals.css .logo-mark). mask-position % =
+          offset / (box − mask): x = −20.65% / (1 − 1.4192) = 49.26%,
+          y = −143.34% × (533/1443) / (533/1443 − 1.4192) = 50.43% */}
+      <span aria-hidden="true" className="logo-mark absolute inset-0" />
+      {/* Fallback for browsers without mask-mode. Screen blending can leave a
+          faint box over a semi-transparent header, hence the mask above. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/brand/logo.png"
         alt="Need for Cars"
         width={2048}
         height={2048}
-        className="absolute top-[-143.34%] left-[-20.65%] h-auto w-[141.92%] max-w-none mix-blend-screen"
+        className="logo-fallback absolute top-[-143.34%] left-[-20.65%] h-auto w-[141.92%] max-w-none mix-blend-screen"
       />
     </Link>
   );

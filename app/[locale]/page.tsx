@@ -1,6 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
 import HomeHero from "@/components/home/HomeHero";
-import Section from "@/components/home/Section";
 import CarSelector from "@/components/home/CarSelector";
 import WhyUs from "@/components/home/WhyUs";
 import HowItWorks from "@/components/home/HowItWorks";
@@ -15,9 +14,22 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   return (
     <>
       <HomeHero />
-      <Section tone="surface" labelledBy="garage-title">
-        <CarSelector />
-      </Section>
+      {/* Same base tone as the hero and no edge, so the two read as one garage.
+          On desktop it fills one screen (CarSelector sizes the car to fit). */}
+      <section
+        id="garage"
+        aria-labelledby="garage-title"
+        className="relative scroll-mt-16 overflow-hidden bg-night pt-6 pb-16 lg:flex lg:min-h-[calc(100svh-4rem)] lg:flex-col lg:justify-center lg:py-6"
+      >
+        {/* Lamp light fades in from the base tone, matching the hero's bottom fade */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-1 h-24 bg-linear-to-b from-night to-transparent"
+        />
+        <div className="mx-auto w-full max-w-7xl px-4 lg:px-8">
+          <CarSelector />
+        </div>
+      </section>
       <WhyUs />
       <HowItWorks />
       <DeliveryCities />

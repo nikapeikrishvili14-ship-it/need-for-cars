@@ -41,6 +41,9 @@ export default function CarModel({
 
   return (
     <div className={`relative ${cutout ? "aspect-20/7" : "aspect-video"} ${className}`}>
+      {cutout && (
+        <span aria-hidden="true" className="contact-shadow absolute inset-x-[4%] bottom-[-2%] h-[9%]" />
+      )}
       <Image
         src={src}
         alt={`${car.brand} ${car.model}`}

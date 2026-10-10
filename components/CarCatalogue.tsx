@@ -48,44 +48,51 @@ export default function CarCatalogue() {
     <div className="mx-auto max-w-7xl px-4 lg:px-8">
       <section
         aria-label={t("filters")}
-        className="grid gap-6 border border-line bg-surface p-4 sm:grid-cols-2 sm:p-6 lg:grid-cols-4"
+        className="grid gap-6 border border-line bg-surface p-4 sm:grid-cols-[repeat(auto-fit,minmax(14rem,1fr))] sm:p-6"
       >
-        <FilterGroup label={t("type")}>
-          <Chip active={filters.type === "all"} onClick={() => set({ type: "all" })}>
-            {t("all")}
-          </Chip>
-          {(["sports", "suv"] as const).map((type) => (
-            <Chip key={type} active={filters.type === type} onClick={() => set({ type })}>
-              {tc(`types.${type}`)}
+        {/* A group only appears when it can actually narrow the list */}
+        {fleet.types.length > 1 && (
+          <FilterGroup label={t("type")}>
+            <Chip active={filters.type === "all"} onClick={() => set({ type: "all" })}>
+              {t("all")}
             </Chip>
-          ))}
-        </FilterGroup>
+            {fleet.types.map((type) => (
+              <Chip key={type} active={filters.type === type} onClick={() => set({ type })}>
+                {tc(`types.${type}`)}
+              </Chip>
+            ))}
+          </FilterGroup>
+        )}
 
-        <FilterGroup label={t("transmission")}>
-          <Chip active={filters.transmission === "all"} onClick={() => set({ transmission: "all" })}>
-            {t("all")}
-          </Chip>
-          {(["automatic", "manual"] as const).map((transmission) => (
-            <Chip
-              key={transmission}
-              active={filters.transmission === transmission}
-              onClick={() => set({ transmission })}
-            >
-              {tc(`transmissions.${transmission}`)}
+        {fleet.transmissions.length > 1 && (
+          <FilterGroup label={t("transmission")}>
+            <Chip active={filters.transmission === "all"} onClick={() => set({ transmission: "all" })}>
+              {t("all")}
             </Chip>
-          ))}
-        </FilterGroup>
+            {fleet.transmissions.map((transmission) => (
+              <Chip
+                key={transmission}
+                active={filters.transmission === transmission}
+                onClick={() => set({ transmission })}
+              >
+                {tc(`transmissions.${transmission}`)}
+              </Chip>
+            ))}
+          </FilterGroup>
+        )}
 
-        <FilterGroup label={t("seats")}>
-          <Chip active={filters.minSeats === 0} onClick={() => set({ minSeats: 0 })}>
-            {t("all")}
-          </Chip>
-          {fleet.seatOptions.map((seats) => (
-            <Chip key={seats} active={filters.minSeats === seats} onClick={() => set({ minSeats: seats })}>
-              {t("seatsMin", { count: seats })}
+        {fleet.seatOptions.length > 0 && (
+          <FilterGroup label={t("seats")}>
+            <Chip active={filters.minSeats === 0} onClick={() => set({ minSeats: 0 })}>
+              {t("all")}
             </Chip>
-          ))}
-        </FilterGroup>
+            {fleet.seatOptions.map((seats) => (
+              <Chip key={seats} active={filters.minSeats === seats} onClick={() => set({ minSeats: seats })}>
+                {t("seatsMin", { count: seats })}
+              </Chip>
+            ))}
+          </FilterGroup>
+        )}
 
         <fieldset className="min-w-0">
           <legend className="mb-3 text-xs font-semibold tracking-widest text-muted uppercase">{t("price")}</legend>

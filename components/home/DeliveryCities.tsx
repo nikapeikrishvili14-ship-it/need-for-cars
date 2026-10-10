@@ -11,7 +11,7 @@ export default async function DeliveryCities() {
   const locale = (await getLocale()) as Locale;
 
   return (
-    <Section labelledBy="delivery-title">
+    <Section tone="surface" labelledBy="delivery-title">
       {/* Cool rim light low on the right, like a city glow on the horizon */}
       <div
         aria-hidden="true"

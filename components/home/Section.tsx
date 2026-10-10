@@ -1,5 +1,7 @@
 type Props = {
   tone?: "night" | "surface";
+  /** Tuck over the band above (false when the band above has the same base tone as the page) */
+  overlap?: boolean;
   /** id of the section's heading, for aria-labelledby */
   labelledBy?: string;
   className?: string;
@@ -8,11 +10,11 @@ type Props = {
 
 // Home page band with an angled top edge that tucks over the band above it,
 // so neighbouring sections meet along one slanted line.
-export default function Section({ tone = "night", labelledBy, className = "", children }: Props) {
+export default function Section({ tone = "night", overlap = true, labelledBy, className = "", children }: Props) {
   return (
     <section
       aria-labelledby={labelledBy}
-      className={`edge-top relative -mt-(--edge) overflow-hidden pt-[calc(var(--edge)+3.5rem)] pb-20 lg:pt-[calc(var(--edge)+5rem)] lg:pb-28 ${
+      className={`edge-top relative ${overlap ? "-mt-(--edge)" : ""} overflow-hidden pt-[calc(var(--edge)+3.5rem)] pb-20 lg:pt-[calc(var(--edge)+5rem)] lg:pb-28 ${
         tone === "surface" ? "bg-surface" : "bg-night"
       } ${className}`}
     >

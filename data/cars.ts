@@ -36,7 +36,10 @@ export type Car = {
    * first photo is shown instead.
    */
   stage?: string;
-  /** Short engine clip (1–2 s), played on switch when the visitor turns sound on */
+  /**
+   * Short engine clip (1–2 s), played on switch when the visitor turns sound on.
+   * Leave undefined until the file exists in public/ — a synthesized rev plays instead.
+   */
   sound?: string;
   featured: boolean;
 };
@@ -71,7 +74,7 @@ export const cars: Car[] = [
     },
     photos: ["/cars/porsche-911-carrera/1.svg", "/cars/porsche-911-carrera/2.svg"],
     stage: "/cars/porsche-911-carrera/stage.svg", // TODO(owner): transparent cut-out photo, e.g. stage.webp
-    sound: "/sounds/porsche-911-carrera.mp3", // TODO(owner): add this engine clip (a synth placeholder plays until then)
+    sound: undefined, // TODO(owner): engine clip, e.g. "/sounds/porsche-911-carrera.mp3" — the synth sound plays until this is set
     featured: true,
   },
   {
@@ -101,7 +104,7 @@ export const cars: Car[] = [
     },
     photos: ["/cars/mercedes-amg-g63/1.svg", "/cars/mercedes-amg-g63/2.svg"],
     stage: "/cars/mercedes-amg-g63/stage.svg", // TODO(owner): transparent cut-out photo, e.g. stage.webp
-    sound: "/sounds/mercedes-amg-g63.mp3", // TODO(owner): add this engine clip (a synth placeholder plays until then)
+    sound: undefined, // TODO(owner): engine clip, e.g. "/sounds/mercedes-amg-g63.mp3" — the synth sound plays until this is set
     featured: true,
   },
   {
@@ -131,7 +134,7 @@ export const cars: Car[] = [
     },
     photos: ["/cars/range-rover-sport/1.svg", "/cars/range-rover-sport/2.svg"],
     stage: "/cars/range-rover-sport/stage.svg", // TODO(owner): transparent cut-out photo, e.g. stage.webp
-    sound: "/sounds/range-rover-sport.mp3", // TODO(owner): add this engine clip (a synth placeholder plays until then)
+    sound: undefined, // TODO(owner): engine clip, e.g. "/sounds/range-rover-sport.mp3" — the synth sound plays until this is set
     featured: true,
   },
 ];

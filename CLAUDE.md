@@ -36,8 +36,9 @@ and forms that send inquiries to the owner. No online payment.
 - Subtle glow on accent, motion used sparingly
 - Fonts: headings Exo 2 Bold/Black Italic (Latin + Cyrillic) with Noto Sans Georgian Bold for Georgian;
   body Inter with Noto Sans Georgian for Georgian — load via next/font/google
-- Logo: public/brand/logo.png — white italic wordmark. Current file has a black background
-  (not transparent) — blend it with the header until a transparent version is added
+- Logo: the site uses public/brand/logo-wordmark.png — white italic wordmark, transparent,
+  cropped. It is cut from the original assets/brand/logo.png (2048×2048, black background,
+  not deployed). Replace logo-wordmark.png when an official transparent logo is available
 - Use the logo's forward slant as a design motif: slanted buttons, angled section edges
 - Mobile-first, fast, readable
 

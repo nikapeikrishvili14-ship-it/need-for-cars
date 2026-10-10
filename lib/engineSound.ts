@@ -1,8 +1,9 @@
 // Engine sound for the home car selector. Only ever runs after the visitor
 // turns sound on, so browsers allow playback (it follows a click).
 //
-// Plays the car's own clip (car.sound). Until the owner adds those files, or if
-// one fails to load, a short synthesized rev plays instead.
+// Plays the car's own clip (car.sound) — only requested when that path is set
+// in data/cars.ts. Without one, or if it fails to load, a short synthesized
+// rev plays instead.
 
 let ctx: AudioContext | null = null;
 let current: HTMLAudioElement | null = null;

@@ -42,7 +42,7 @@ export default function CarCard({ car }: { car: Car }) {
         </ul>
 
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-line pt-4">
-          <Price usd={car.pricePerDay} perDay className="font-heading text-2xl font-bold" />
+          <Price usd={car.pricePerDay} per="day" className="font-heading text-2xl font-bold" />
           <span className="text-sm font-semibold text-accent transition-transform duration-300 group-hover:translate-x-1">
             {t("details")} →
           </span>

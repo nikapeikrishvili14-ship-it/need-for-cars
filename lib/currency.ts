@@ -62,12 +62,19 @@ export function formatMoney(amount: number, code: CurrencyCode, locale: string):
     .join("");
 }
 
-/** A USD amount formatted in the visitor's selected currency. */
-export function usePrice(usd: number): { text: string; approx: boolean } {
+type Money = { text: string; approx: boolean };
+
+/** Formatter for USD amounts in the visitor's selected currency (for lists/loops). */
+export function useMoney(): (usd: number) => Money {
   const code = useCurrency();
   const locale = useLocale();
-  return {
+  return (usd) => ({
     text: formatMoney(convertFromUsd(usd, code), code, locale),
     approx: code !== site.baseCurrency,
-  };
+  });
+}
+
+/** A USD amount formatted in the visitor's selected currency. */
+export function usePrice(usd: number): Money {
+  return useMoney()(usd);
 }

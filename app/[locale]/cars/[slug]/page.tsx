@@ -69,7 +69,7 @@ export default async function CarPage({ params }: PageProps<"/[locale]/cars/[slu
           </div>
 
           <div className="border border-line bg-surface p-5 sm:p-6">
-            <Price usd={car.pricePerDay} perDay className="font-heading text-4xl font-black italic" />
+            <Price usd={car.pricePerDay} per="day" className="font-heading text-4xl font-black italic" />
 
             <h2 className="mt-6 text-sm font-bold tracking-widest text-muted uppercase">{t("requirements")}</h2>
             <dl className="mt-3 grid grid-cols-2 gap-4">

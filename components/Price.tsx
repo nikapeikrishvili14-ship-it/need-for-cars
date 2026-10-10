@@ -6,13 +6,14 @@ import { usePrice } from "@/lib/currency";
 type Props = {
   /** Amount in USD */
   usd: number;
-  perDay?: boolean;
+  /** Optional suffix: "/ day" or "one-time" */
+  per?: "day" | "rental";
   className?: string;
 };
 
 // Every price on the site goes through here so the currency switch updates it.
 // Converted (non-USD) amounts get an "approx." mark.
-export default function Price({ usd, perDay = false, className = "" }: Props) {
+export default function Price({ usd, per, className = "" }: Props) {
   const t = useTranslations("price");
   const { text, approx } = usePrice(usd);
 
@@ -20,7 +21,11 @@ export default function Price({ usd, perDay = false, className = "" }: Props) {
     <span className={`whitespace-nowrap ${className}`}>
       {approx && <span className="mr-1 text-[0.65em] font-normal text-muted">{t("approx")}</span>}
       <span>{text}</span>
-      {perDay && <span className="ml-1 text-[0.65em] font-normal text-muted">{t("perDay")}</span>}
+      {per && (
+        <span className="ml-1 text-[0.65em] font-normal text-muted">
+          {t(per === "day" ? "perDay" : "perRental")}
+        </span>
+      )}
     </span>
   );
 }

@@ -1,21 +1,20 @@
 import { getTranslations } from "next-intl/server";
-import { site } from "@/data/site";
+import { whatsappUrl } from "@/lib/whatsapp";
+import WhatsAppIcon from "./WhatsAppIcon";
 
 export default async function WhatsAppButton() {
   const t = await getTranslations("whatsapp");
 
   return (
     <a
-      href={`https://wa.me/${site.contacts.whatsapp}`}
+      href={whatsappUrl()}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("label")}
       title={t("label")}
       className="fixed right-4 bottom-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/40 transition-transform hover:scale-105 sm:right-6 sm:bottom-6"
     >
-      <svg viewBox="0 0 32 32" width="30" height="30" fill="currentColor" aria-hidden="true">
-        <path d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.3.6 4.53 1.74 6.5L3 29l6.68-1.75A12.95 12.95 0 0 0 16.04 29C23.2 29 29 23.18 29 16S23.2 3 16.04 3Zm0 23.76c-1.95 0-3.86-.52-5.53-1.51l-.4-.24-3.96 1.04 1.06-3.86-.26-.4A10.7 10.7 0 0 1 5.3 16c0-5.92 4.82-10.74 10.75-10.74 5.92 0 10.73 4.82 10.73 10.74 0 5.93-4.81 10.76-10.74 10.76Zm5.89-8.04c-.32-.16-1.91-.94-2.2-1.05-.3-.11-.51-.16-.73.16-.21.32-.83 1.05-1.02 1.27-.19.21-.38.24-.7.08-.32-.16-1.36-.5-2.59-1.6-.96-.85-1.6-1.9-1.79-2.22-.19-.32-.02-.5.14-.66.15-.14.32-.38.48-.56.16-.19.21-.32.32-.54.1-.21.05-.4-.03-.56-.08-.16-.72-1.74-.99-2.38-.26-.62-.53-.54-.73-.55h-.62c-.21 0-.56.08-.86.4-.29.32-1.12 1.1-1.12 2.67 0 1.58 1.15 3.1 1.31 3.32.16.21 2.26 3.45 5.48 4.84.77.33 1.37.53 1.83.68.77.24 1.47.21 2.02.13.62-.09 1.91-.78 2.18-1.53.27-.75.27-1.4.19-1.53-.08-.13-.29-.21-.61-.37Z" />
-      </svg>
+      <WhatsAppIcon size={30} />
     </a>
   );
 }

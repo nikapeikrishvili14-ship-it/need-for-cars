@@ -3,7 +3,7 @@ import type { CurrencyCode, Localized } from "./types";
 export type City = {
   id: string;
   name: Localized;
-  /** One-way delivery fee in USD (0 = free) */
+  /** Fee in USD to deliver the car here or collect it from here (0 = free) */
   deliveryFee: number;
 };
 
@@ -37,8 +37,8 @@ export type SiteConfig = {
   };
   cities: City[];
   extras: Extra[];
-  /** Custom drop-off at a different location, USD */
-  customDropOffFee: number;
+  /** Fee in USD for pickup or drop-off at a customer-chosen address */
+  customAddressFee: number;
   /** Refundable deposit in USD — shown separately, never added to the total */
   deposit: number;
   baseCurrency: "USD";
@@ -72,18 +72,18 @@ export const site: SiteConfig = {
     facebook: undefined, // TODO(owner): Facebook URL
   },
   cities: [
-    // TODO(owner): confirm delivery cities and fees
+    // TODO(owner): confirm delivery cities and fees (placeholder prices)
     { id: "tbilisi", name: { en: "Tbilisi", ka: "თბილისი", ru: "Тбилиси" }, deliveryFee: 0 },
-    { id: "tbilisi-airport", name: { en: "Tbilisi Airport", ka: "თბილისის აეროპორტი", ru: "Аэропорт Тбилиси" }, deliveryFee: 0 },
-    { id: "batumi", name: { en: "Batumi", ka: "ბათუმი", ru: "Батуми" }, deliveryFee: 0 },
-    { id: "kutaisi", name: { en: "Kutaisi", ka: "ქუთაისი", ru: "Кутаиси" }, deliveryFee: 0 },
+    { id: "tbilisi-airport", name: { en: "Tbilisi Airport", ka: "თბილისის აეროპორტი", ru: "Аэропорт Тбилиси" }, deliveryFee: 20 },
+    { id: "batumi", name: { en: "Batumi", ka: "ბათუმი", ru: "Батуми" }, deliveryFee: 150 },
+    { id: "kutaisi", name: { en: "Kutaisi", ka: "ქუთაისი", ru: "Кутаиси" }, deliveryFee: 100 },
   ],
   extras: [
-    // TODO(owner): confirm extras and prices
-    { id: "child-seat", name: { en: "Child seat", ka: "ბავშვის სავარძელი", ru: "Детское кресло" }, price: 0, per: "day" },
-    { id: "additional-driver", name: { en: "Additional driver", ka: "დამატებითი მძღოლი", ru: "Дополнительный водитель" }, price: 0, per: "rental" },
+    // TODO(owner): confirm extras and prices (placeholder prices)
+    { id: "child-seat", name: { en: "Child seat", ka: "ბავშვის სავარძელი", ru: "Детское кресло" }, price: 10, per: "day" },
+    { id: "additional-driver", name: { en: "Additional driver", ka: "დამატებითი მძღოლი", ru: "Дополнительный водитель" }, price: 20, per: "rental" },
   ],
-  customDropOffFee: 0, // TODO(owner): custom drop-off price
+  customAddressFee: 30, // TODO(owner): price for delivery/collection at a custom address
   deposit: 100,
   baseCurrency: "USD",
   currencyRates: {

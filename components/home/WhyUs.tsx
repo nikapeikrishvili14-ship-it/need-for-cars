@@ -13,6 +13,8 @@ const items = [
 
 export default async function WhyUs() {
   const t = await getTranslations("home.why");
+  const tPrice = await getTranslations("price");
+  const refund = tPrice("refundTime", { days: site.depositRefundDays });
 
   return (
     <Section tone="surface" overlap={false} labelledBy="why-title">
@@ -29,7 +31,10 @@ export default async function WhyUs() {
                 <h3 className="text-xl font-bold italic sm:text-2xl">{t(`${key}.title`)}</h3>
                 <p className="mt-1.5 max-w-lg text-muted">
                   {key === "deposit"
-                    ? t.rich("deposit.text", { amount: () => <Price usd={site.deposit} className="text-fg" /> })
+                    ? t.rich("deposit.text", {
+                        amount: () => <Price usd={site.deposit} className="text-fg" />,
+                        refund,
+                      })
                     : t(`${key}.text`)}
                 </p>
               </div>

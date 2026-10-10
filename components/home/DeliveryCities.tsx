@@ -5,13 +5,13 @@ import type { Locale } from "@/i18n/routing";
 import Price from "@/components/Price";
 import Section, { SectionHeading } from "./Section";
 
-export default async function DeliveryCities() {
+export default async function DeliveryCities({ tone = "surface" }: { tone?: "night" | "surface" }) {
   const t = await getTranslations("home.delivery");
   const tBooking = await getTranslations("booking");
   const locale = (await getLocale()) as Locale;
 
   return (
-    <Section tone="surface" labelledBy="delivery-title">
+    <Section tone={tone} labelledBy="delivery-title">
       {/* Cool rim light low on the right, like a city glow on the horizon */}
       <div
         aria-hidden="true"
@@ -23,7 +23,7 @@ export default async function DeliveryCities() {
 
         <ul className="mt-12 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {site.cities.map((city) => (
-            <li key={city.id} className="flex flex-col gap-6 bg-night p-6">
+            <li key={city.id} className={`flex flex-col gap-6 p-6 ${tone === "night" ? "bg-surface" : "bg-night"}`}>
               <MapPin size={20} className="text-accent" aria-hidden="true" />
               <div className="mt-auto">
                 <p className="font-heading text-2xl font-bold italic">{city.name[locale]}</p>

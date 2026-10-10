@@ -1,10 +1,14 @@
 import { getTranslations } from "next-intl/server";
+import { site } from "@/data/site";
 import Section, { SectionHeading } from "./Section";
 
 const steps = ["choose", "request", "confirm", "drive"] as const;
 
 export default async function HowItWorks() {
   const t = await getTranslations("home.steps");
+  const tPrice = await getTranslations("price");
+  // Only the last step mentions it; extra values are ignored by the others
+  const refund = tPrice("refundTime", { days: site.depositRefundDays });
 
   return (
     <Section labelledBy="steps-title">
@@ -26,7 +30,7 @@ export default async function HowItWorks() {
               )}
             </div>
             <h3 className="mt-4 text-2xl font-bold italic">{t(`${step}.title`)}</h3>
-            <p className="mt-2 max-w-xs text-muted">{t(`${step}.text`)}</p>
+            <p className="mt-2 max-w-xs text-muted">{t(`${step}.text`, { refund })}</p>
           </li>
         ))}
       </ol>

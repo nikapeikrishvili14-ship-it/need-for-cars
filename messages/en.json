@@ -82,7 +82,7 @@
       },
       "deposit": {
         "title": "Small deposit, quick refund",
-        "text": "Only <amount></amount>, returned 1 working day after you bring the car back."
+        "text": "Only <amount></amount>, returned {refund} after you bring the car back."
       },
       "request": {
         "title": "No online payment",
@@ -106,7 +106,7 @@
       },
       "drive": {
         "title": "Get the keys",
-        "text": "We hand over the car at the agreed place. Your deposit comes back 1 working day after you return it."
+        "text": "We hand over the car at the agreed place. Your deposit comes back {refund} after you return it."
       }
     },
     "delivery": {
@@ -128,10 +128,46 @@
       "find": "Find me a car"
     }
   },
+  "about": {
+    "intro": "Need for Cars rents sports cars and luxury SUVs in Georgia. We bring the car to your hotel, your home or the airport, and you book with a short form or a WhatsApp message. No online payment.",
+    "cities": "We deliver to {cities}.",
+    "storyTitle": "Our story",
+    "terms": {
+      "title": "Rental terms",
+      "intro": "The rules in plain words. If something isn't listed yet, ask us.",
+      "deposit": "Deposit",
+      "depositText": "<amount></amount>, paid when you get the car and refunded {refund} after you return it. It isn't part of the rental price.",
+      "insurance": "Insurance",
+      "requirements": "Driver age and experience",
+      "requirementsText": "Each car has its own minimum driver age and driving experience:",
+      "car": "Car",
+      "allCars": "See all cars"
+    }
+  },
+  "faq": {
+    "intro": "Quick answers about booking, payment, delivery and driver requirements.",
+    "jump": "FAQ topics",
+    "groups": {
+      "booking": "Booking",
+      "payment": "Payment & deposit",
+      "delivery": "Delivery",
+      "requirements": "Requirements"
+    },
+    "moreTitle": "Still have a question?",
+    "moreText": "Message us and we'll answer.",
+    "whatsapp": "Message us on WhatsApp",
+    "contact": "Other ways to reach us"
+  },
+  "askUs": {
+    "text": "Contact us for details.",
+    "link": "Ask on WhatsApp",
+    "message": "Hello! I have a question: {topic}"
+  },
   "price": {
     "approx": "approx.",
     "perDay": "/ day",
-    "perRental": "one-time"
+    "perRental": "one-time",
+    "refundTime": "{days, plural, one {# working day} other {# working days}}"
   },
   "car": {
     "types": {
@@ -172,7 +208,7 @@
     "requirements": "Driver requirements",
     "minAge": "Minimum age",
     "minExperience": "Driving experience",
-    "deposit": "Refundable deposit of {amount}, returned 1 working day after you return the car. Not included in the rental price.",
+    "deposit": "Refundable deposit of {amount}, returned {refund} after you return the car. Not included in the rental price.",
     "insurance": "All our cars are insured.",
     "book": "Book this car",
     "back": "All cars",
@@ -271,7 +307,7 @@
       "dropoffFee": "Drop-off: {place}",
       "total": "Total",
       "deposit": "Refundable deposit",
-      "depositNote": "Paid at pickup and returned 1 working day after you return the car. Not included in the total.",
+      "depositNote": "Paid at pickup and returned {refund} after you return the car. Not included in the total.",
       "note": "This is an estimate. We'll confirm the final price.",
       "approxNote": "Converted at a fixed rate, so amounts are approximate."
     },

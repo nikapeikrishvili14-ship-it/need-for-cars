@@ -10,5 +10,7 @@ export default function DepositNote({ className = "" }: { className?: string }) 
   const { text, approx } = usePrice(site.deposit);
   const amount = approx ? `${text} (${t("price.approx")})` : text;
 
-  return <p className={className}>{t("car.deposit", { amount })}</p>;
+  const refund = t("price.refundTime", { days: site.depositRefundDays });
+
+  return <p className={className}>{t("car.deposit", { amount, refund })}</p>;
 }

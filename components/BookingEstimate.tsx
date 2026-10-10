@@ -17,6 +17,8 @@ type Props = {
 export default function BookingEstimate({ days, lines, totalUsd }: Props) {
   const t = useTranslations("booking.estimate");
   const tb = useTranslations("booking");
+  const tp = useTranslations("price");
+  const refund = tp("refundTime", { days: site.depositRefundDays });
   const approx = useCurrency() !== site.baseCurrency;
 
   return (
@@ -53,7 +55,7 @@ export default function BookingEstimate({ days, lines, totalUsd }: Props) {
           <span>{t("deposit")}</span>
           <Price usd={site.deposit} className="font-semibold" />
         </div>
-        <p className="mt-1.5 text-xs text-muted">{t("depositNote")}</p>
+        <p className="mt-1.5 text-xs text-muted">{t("depositNote", { refund })}</p>
       </div>
 
       <p className="mt-4 text-xs text-muted">

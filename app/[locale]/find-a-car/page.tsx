@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { staticPageMetadata } from "@/lib/seo";
 import PageTitle from "@/components/PageTitle";
 import FindCarForm from "@/components/FindCarForm";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/find-a-car">): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.findACar" });
-  return { title: t("title") };
+  return staticPageMetadata(locale, "/find-a-car");
 }
 
 export default async function FindACarPage({ params }: PageProps<"/[locale]/find-a-car">) {

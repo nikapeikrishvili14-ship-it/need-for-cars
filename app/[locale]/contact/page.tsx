@@ -3,14 +3,14 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { site } from "@/data/site";
 import { whatsappUrl } from "@/lib/whatsapp";
+import { staticPageMetadata } from "@/lib/seo";
 import PageTitle from "@/components/PageTitle";
 import ContactForm from "@/components/ContactForm";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/contact">): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.contact" });
-  return { title: t("title") };
+  return staticPageMetadata(locale, "/contact");
 }
 
 export default async function ContactPage({ params }: PageProps<"/[locale]/contact">) {

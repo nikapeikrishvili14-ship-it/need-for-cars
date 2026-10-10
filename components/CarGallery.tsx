@@ -5,6 +5,7 @@ import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { carouselKeyHandler } from "@/lib/carouselKeys";
 import StudioBackdrop from "./garage/StudioBackdrop";
 
 type Props = {
@@ -30,12 +31,15 @@ export default function CarGallery({ photos, alt }: Props) {
   }, [embla]);
 
   return (
-    <div>
+    // ← → / Home / End switch photos while focus is anywhere in the gallery
+    <div onKeyDown={carouselKeyHandler(embla)}>
       <div
         role="region"
         aria-roledescription="carousel"
         aria-label={alt}
-        className="relative isolate overflow-hidden border border-line bg-night px-3 pt-8 sm:px-8 sm:pt-12"
+        // Focusable so keyboard users can reach the arrow-key control
+        tabIndex={total > 1 ? 0 : undefined}
+        className="relative isolate overflow-hidden border border-line bg-night px-3 pt-8 focus-visible:-outline-offset-4 sm:px-8 sm:pt-12"
       >
         <StudioBackdrop horizon={80} />
 
@@ -47,6 +51,7 @@ export default function CarGallery({ photos, alt }: Props) {
                 role="group"
                 aria-roledescription="slide"
                 aria-label={t("photo", { n: i + 1, total })}
+                aria-hidden={i !== index}
                 className="min-w-0 flex-[0_0_100%]"
               >
                 <div className="edge-angled relative aspect-video overflow-hidden">

@@ -1,4 +1,9 @@
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
+import { pageMetadata } from "@/lib/seo";
+import { autoRentalSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 import HomeHero from "@/components/home/HomeHero";
 import CarSelector from "@/components/home/CarSelector";
 import WhyUs from "@/components/home/WhyUs";
@@ -7,12 +12,27 @@ import DeliveryCities from "@/components/home/DeliveryCities";
 import Reviews from "@/components/home/Reviews";
 import FinalCta from "@/components/home/FinalCta";
 
+export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return pageMetadata({
+    locale: locale as Locale,
+    path: "/",
+    title: t("title"),
+    absoluteTitle: true,
+    description: t("description"),
+    imageAlt: t("ogImageAlt"),
+  });
+}
+
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("meta");
 
   return (
     <>
+      <JsonLd data={autoRentalSchema(locale as Locale, t("description"))} />
       <HomeHero />
       {/* Same base tone as the hero and no edge, so the two read as one garage.
           On desktop it fills one screen (CarSelector sizes the car to fit). */}

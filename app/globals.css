@@ -42,6 +42,15 @@ h3 {
   font-family: var(--font-heading);
 }
 
+/* Visible keyboard focus on everything (links, buttons, carousels…).
+   In the base layer so a component's own focus style can still override it. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
 /* Georgian has no italic — keep it upright instead of a faked slant */
 :lang(ka) {
   font-synthesis-style: none;
@@ -127,29 +136,6 @@ input[type="range"] {
 /* Soft dark patch where the tyres meet the floor */
 .contact-shadow {
   background: radial-gradient(closest-side, rgb(0 0 0 / 0.8), transparent);
-}
-
-/* Logo: logo.png is a white wordmark on solid black. A luminance mask keeps
-   only the white, so the black is truly transparent on any background.
-   Crop maths in components/Logo.tsx. Fallback: the <img> with screen blending. */
-.logo-mark {
-  display: none;
-}
-
-@supports (mask-mode: luminance) {
-  .logo-mark {
-    display: block;
-    background: #fff;
-    mask-image: url("/brand/logo.png");
-    mask-mode: luminance;
-    mask-repeat: no-repeat;
-    mask-size: 141.92% auto;
-    mask-position: 49.26% 50.43%;
-  }
-
-  .logo-fallback {
-    display: none;
-  }
 }
 
 /* Slow drifting haze — desktop only, and not with reduced motion */

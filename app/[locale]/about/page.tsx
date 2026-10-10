@@ -6,6 +6,7 @@ import type { Locale } from "@/i18n/routing";
 import { cars } from "@/data/cars";
 import { site } from "@/data/site";
 import { cityList } from "@/lib/siteText";
+import { staticPageMetadata } from "@/lib/seo";
 import StudioBackdrop from "@/components/garage/StudioBackdrop";
 import CarModel from "@/components/garage/CarModel";
 import SlantLink from "@/components/SlantLink";
@@ -16,9 +17,7 @@ import DeliveryCities from "@/components/home/DeliveryCities";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/about">): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.about" });
-  const ta = await getTranslations({ locale, namespace: "about" });
-  return { title: t("title"), description: ta("intro") };
+  return staticPageMetadata(locale, "/about");
 }
 
 export default async function AboutPage({ params }: PageProps<"/[locale]/about">) {

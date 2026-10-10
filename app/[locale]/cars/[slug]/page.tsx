@@ -5,6 +5,8 @@ import { ChevronLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { cars, getCar } from "@/data/cars";
+import { carShareImage, pageMetadata } from "@/lib/seo";
+import { formatDecimal, formatMoney } from "@/lib/money";
 import CarGallery from "@/components/CarGallery";
 import StatBars from "@/components/StatBars";
 import Price from "@/components/Price";
@@ -19,13 +21,26 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/cars/[slug]">): Promise<Metadata> {
-  const { locale, slug } = await params;
+  const { locale: param, slug } = await params;
+  const locale = param as Locale;
   const car = getCar(slug);
   if (!car) return {};
-  return {
-    title: `${car.brand} ${car.model}`,
-    description: car.description[locale as Locale],
-  };
+  const t = await getTranslations({ locale, namespace: "meta.car" });
+  const tCar = await getTranslations({ locale, namespace: "car" });
+  const name = `${car.brand} ${car.model}`;
+  return pageMetadata({
+    locale,
+    path: `/cars/${car.slug}`,
+    title: t("title", { car: name }),
+    description: t("description", {
+      car: name,
+      price: formatMoney(car.pricePerDay, "USD", locale),
+      hp: tCar("units.hp", { value: car.specs.hp }),
+      seconds: tCar("units.seconds", { value: formatDecimal(car.specs.acceleration, locale) }),
+    }),
+    image: carShareImage(locale, car, t("imageAlt", { car: name })),
+    imageAlt: t("imageAlt", { car: name }),
+  });
 }
 
 export default async function CarPage({ params }: PageProps<"/[locale]/cars/[slug]">) {
@@ -40,7 +55,7 @@ export default async function CarPage({ params }: PageProps<"/[locale]/cars/[slu
   const specs = [
     { label: t("specs.engine"), value: car.specs.engine },
     { label: t("specs.power"), value: t("units.hp", { value: car.specs.hp }) },
-    { label: t("specs.acceleration"), value: t("units.seconds", { value: car.specs.acceleration }) },
+    { label: t("specs.acceleration"), value: t("units.seconds", { value: formatDecimal(car.specs.acceleration, locale) }) },
     { label: t("specs.topSpeed"), value: t("units.kmh", { value: car.specs.topSpeed }) },
     { label: t("specs.transmission"), value: t(`transmissions.${car.transmission}`) },
     { label: t("specs.drive"), value: car.specs.drive },

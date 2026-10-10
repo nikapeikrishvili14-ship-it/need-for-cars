@@ -2,9 +2,10 @@
 
 import { useRef } from "react";
 import { useInView } from "motion/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { Car } from "@/data/cars";
 import { fleet } from "@/lib/fleet";
+import { formatDecimal } from "@/lib/money";
 
 const SEGMENTS = 20;
 
@@ -20,6 +21,7 @@ type Props = {
 // Remount with a new `key` to replay the fill (the home car selector does this).
 export default function StatBars({ car, variant = "stacked" }: Props) {
   const t = useTranslations("car");
+  const locale = useLocale();
   const ref = useRef<HTMLDListElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
   const { hp, acceleration, topSpeed } = car.specs;
@@ -28,7 +30,7 @@ export default function StatBars({ car, variant = "stacked" }: Props) {
     { label: t("specs.power"), value: t("units.hp", { value: hp }), ratio: hp / fleet.maxHp },
     {
       label: t("specs.acceleration"),
-      value: t("units.seconds", { value: acceleration }),
+      value: t("units.seconds", { value: formatDecimal(acceleration, locale) }),
       ratio: fleet.bestAcceleration / acceleration,
     },
     { label: t("specs.topSpeed"), value: t("units.kmh", { value: topSpeed }), ratio: topSpeed / fleet.maxTopSpeed },

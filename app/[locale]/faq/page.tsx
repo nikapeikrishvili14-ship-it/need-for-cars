@@ -6,17 +6,17 @@ import type { Locale } from "@/i18n/routing";
 import { site } from "@/data/site";
 import { faqGroups, fillSiteTokens } from "@/lib/siteText";
 import { whatsappUrl } from "@/lib/whatsapp";
+import { staticPageMetadata } from "@/lib/seo";
 import PageTitle from "@/components/PageTitle";
 import AskUs from "@/components/AskUs";
+import JsonLd from "@/components/JsonLd";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import StudioBackdrop from "@/components/garage/StudioBackdrop";
 import { slantButton } from "@/components/SlantLink";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/faq">): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.faq" });
-  const tf = await getTranslations({ locale, namespace: "faq" });
-  return { title: t("title"), description: tf("intro") };
+  return staticPageMetadata(locale, "/faq");
 }
 
 export default async function FaqPage({ params }: PageProps<"/[locale]/faq">) {
@@ -52,11 +52,7 @@ export default async function FaqPage({ params }: PageProps<"/[locale]/faq">) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        // Escape "<" so text can never close the script tag
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
-      />
+      <JsonLd data={jsonLd} />
 
       <PageTitle intro={tf("intro")}>{t("title")}</PageTitle>
 

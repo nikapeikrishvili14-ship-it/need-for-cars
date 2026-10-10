@@ -1,13 +1,13 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { staticPageMetadata } from "@/lib/seo";
 import PageTitle from "@/components/PageTitle";
 import BookingForm from "@/components/BookingForm";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/book">): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.book" });
-  return { title: t("title") };
+  return staticPageMetadata(locale, "/book");
 }
 
 export default async function BookPage({ params }: PageProps<"/[locale]/book">) {

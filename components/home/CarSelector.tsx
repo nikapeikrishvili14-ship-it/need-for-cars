@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import { cars } from "@/data/cars";
 import { playEngine } from "@/lib/engineSound";
+import { carouselKeyHandler } from "@/lib/carouselKeys";
 import StudioBackdrop from "@/components/garage/StudioBackdrop";
 import CarModel from "@/components/garage/CarModel";
 import StatBars from "@/components/StatBars";
@@ -67,13 +68,16 @@ export default function CarSelector() {
   const name = (c: (typeof cars)[number]) => `${c.brand} ${c.model}`;
 
   return (
-    <div className={carWidth}>
+    // ← → / Home / End switch cars while focus is anywhere in the garage
+    <div className={carWidth} onKeyDown={carouselKeyHandler(embla)}>
       <div className="relative z-10 flex items-end justify-between gap-4">
         <div className="lg:flex lg:items-baseline lg:gap-5">
           <h2 id="garage-title" className="text-3xl leading-none font-black italic sm:text-4xl">
             {t("title")}
           </h2>
-          <p className="mt-2 text-sm text-muted lg:mt-0">{t("intro")}</p>
+          <p id="garage-intro" className="mt-2 text-sm text-muted lg:mt-0">
+            {t("intro")}
+          </p>
         </div>
         <button
           type="button"
@@ -95,7 +99,10 @@ export default function CarSelector() {
         role="region"
         aria-roledescription="carousel"
         aria-labelledby="garage-title"
-        className="relative mx-[calc(50%-50vw)] mt-4"
+        aria-describedby="garage-intro"
+        // Focusable so keyboard users can reach the arrow-key control
+        tabIndex={0}
+        className="relative mx-[calc(50%-50vw)] mt-4 focus-visible:-outline-offset-4"
       >
         <StudioBackdrop floor={false} className="-top-20" />
         <div
@@ -113,6 +120,8 @@ export default function CarSelector() {
                   role="group"
                   aria-roledescription="slide"
                   aria-label={t("slide", { n: i + 1, total: cars.length })}
+                  // Screen readers get the current car only (its name is announced below)
+                  aria-hidden={!active}
                   className="min-w-0 flex-[0_0_var(--car-w)]"
                   onClick={() => !active && embla?.scrollTo(i)}
                 >

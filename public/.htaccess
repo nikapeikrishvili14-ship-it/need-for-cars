@@ -1,0 +1,2 @@
+# Apache / cPanel: show the site's own 404 page (all three languages) for unknown URLs
+ErrorDocument 404 /404.html

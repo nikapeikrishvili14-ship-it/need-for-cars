@@ -1,7 +1,41 @@
 {
   "meta": {
     "title": "Need for Cars — Sports & Luxury Car Rental in Georgia",
-    "description": "Rent sports cars and luxury SUVs in Georgia. Delivery to your hotel or airport."
+    "description": "Rent sports cars and luxury SUVs in Georgia. We deliver to your hotel or the airport. Small refundable deposit, no online payment.",
+    "ogHeadline": "Sports cars & luxury SUVs for rent in Georgia",
+    "ogTagline": "Delivered to your hotel or the airport",
+    "ogImageAlt": "Need for Cars — sports car and luxury SUV rental in Georgia",
+    "pages": {
+      "cars": {
+        "title": "Sports cars & luxury SUVs for rent",
+        "description": "Browse our fleet of sports cars and luxury SUVs for rent in Georgia. Filter by type, transmission, seats and price per day."
+      },
+      "book": {
+        "title": "Book a sports car or luxury SUV",
+        "description": "Send a booking request with your dates and pickup place and see a live price estimate. We confirm availability by phone or WhatsApp."
+      },
+      "findACar": {
+        "title": "Find the right car for your trip",
+        "description": "Not sure which car to rent? Tell us your dates, budget and occasion, and we'll suggest the right sports car or SUV in Georgia."
+      },
+      "about": {
+        "title": "About us & rental terms",
+        "description": "Who we are and how renting works: deposit, insurance, driver age and experience, delivery cities and our other rental terms."
+      },
+      "faq": {
+        "title": "FAQ: renting a car in Georgia",
+        "description": "Answers about booking, payment and deposit, delivery to hotels and the airport, and driver requirements at Need for Cars."
+      },
+      "contact": {
+        "title": "Contact us",
+        "description": "Call, email or message Need for Cars on WhatsApp. See our working hours and where to find us in Georgia."
+      }
+    },
+    "car": {
+      "title": "Rent the {car} in Georgia",
+      "description": "Rent the {car} in Georgia from {price} a day: {hp}, 0–100 km/h in {seconds}. Delivered to your hotel or the airport.",
+      "imageAlt": "{car} for rent — Need for Cars"
+    }
   },
   "nav": {
     "home": "Home",
@@ -13,7 +47,8 @@
     "book": "Book now",
     "menu": "Open menu",
     "close": "Close menu",
-    "main": "Main navigation"
+    "main": "Main navigation",
+    "skip": "Skip to content"
   },
   "switchers": {
     "language": "Language",
@@ -188,7 +223,7 @@
     "years": "{count, plural, one {# year} other {# years}}",
     "units": {
       "hp": "{value, number} hp",
-      "seconds": "{value, number} s",
+      "seconds": "{value} s",
       "kmh": "{value, number} km/h"
     },
     "specs": {
@@ -338,6 +373,8 @@
   },
   "notFound": {
     "title": "Page not found",
-    "back": "Back to home"
+    "back": "Back to home",
+    "text": "This road doesn't lead anywhere. Head back to the garage and pick a car.",
+    "cars": "Browse cars"
   }
 }

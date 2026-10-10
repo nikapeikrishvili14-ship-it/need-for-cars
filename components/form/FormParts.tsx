@@ -9,7 +9,7 @@ import WhatsAppIcon from "../WhatsAppIcon";
 
 // text-base (16px) on inputs stops iOS Safari from zooming in on focus
 export const inputClass =
-  "block w-full border bg-night px-3.5 py-3 text-base text-fg placeholder:text-muted/60 transition-colors outline-none focus:border-accent focus:shadow-glow aria-[invalid=true]:border-red-500 border-line [color-scheme:dark]";
+  "block w-full border bg-night px-3.5 py-3 text-base text-fg placeholder:text-muted transition-colors outline-none focus:border-accent focus:shadow-glow aria-[invalid=true]:border-red-500 border-line [color-scheme:dark]";
 
 /** Props that link an input to its label, hint and error message */
 export function fieldA11y(id: string, error?: ErrorKey, hint?: boolean) {

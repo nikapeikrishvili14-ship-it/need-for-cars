@@ -49,6 +49,8 @@ export type SiteConfig = {
     /** Google Maps embed URL (Share → Embed a map → src) */
     mapEmbedUrl: string;
     hours: Localized;
+    /** Same hours for Google (structured data): days Mo Tu We Th Fr Sa Su, 24-hour times */
+    openingHours: { days: ("Mo" | "Tu" | "We" | "Th" | "Fr" | "Sa" | "Su")[]; opens: string; closes: string };
     instagram?: string;
     facebook?: string;
   };
@@ -109,6 +111,8 @@ export const site: SiteConfig = {
       ka: "ყოველდღე, 09:00–21:00",
       ru: "Ежедневно, 09:00–21:00",
     },
+    // TODO(owner): keep in sync with `hours` above
+    openingHours: { days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"], opens: "09:00", closes: "21:00" },
     instagram: undefined, // TODO(owner): Instagram URL
     facebook: undefined, // TODO(owner): Facebook URL
   },

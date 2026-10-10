@@ -1,7 +1,7 @@
 import { site } from "@/data/site";
 import type { CurrencyCode } from "@/data/types";
 
-// Pure money helpers — no React, so server components can use them too.
+// Pure number/money helpers — no React, so server components can use them too.
 // The client-side currency switch lives in lib/currency.ts.
 
 /** Converts a USD amount with the fixed rates from data/site.ts. */
@@ -9,24 +9,35 @@ export function convertFromUsd(usd: number, code: CurrencyCode): number {
   return Math.round(usd * site.currencyRates[code]);
 }
 
-// Fixed symbols: locale data varies (e.g. Russian ICU shows GEL as "ლ"), and
-// server vs browser differences would cause hydration mismatches.
+// Prices are formatted by hand, not with Intl's currency style: locale data
+// differs between Node (which renders the static HTML) and browsers — e.g. for
+// Georgian, Node gives "350 US$" and Chrome "$350" — and any difference breaks
+// React hydration. Fixed symbols, positions and separators are the same everywhere.
 const symbols: Record<CurrencyCode, string> = { USD: "$", GEL: "₾", EUR: "€" };
 
-export function formatMoney(amount: number, code: CurrencyCode, locale: string): string {
-  // Intl decides number grouping and symbol position per language; we pick the symbol
-  const parts = new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: code,
-    maximumFractionDigits: 0,
-  }).formatToParts(amount);
+const NBSP = " ";
 
-  return parts
-    .map((part, i) => {
-      if (part.type === "currency") return symbols[code];
-      // A prefix symbol sits right against the number ("₾945", not "₾ 945")
-      if (part.type === "literal" && parts[i - 1]?.type === "currency" && i === 1) return "";
-      return part.value;
-    })
-    .join("");
+/** Per language: thousands separator, and whether the symbol follows the number */
+const styles: Record<string, { group: string; symbolAfter: boolean }> = {
+  en: { group: ",", symbolAfter: false }, // $1,450
+  ka: { group: NBSP, symbolAfter: true }, // 1 450 $
+  ru: { group: NBSP, symbolAfter: true }, // 1 450 $
+};
+
+/**
+ * A decimal like 4.2 with the language's separator ("4.2" / "4,2"), without
+ * Intl: Chrome has no Georgian number data and would print "4.2" where the
+ * server printed "4,2", breaking hydration.
+ */
+export function formatDecimal(value: number, locale: string): string {
+  const text = String(value);
+  return locale === "en" ? text : text.replace(".", ",");
+}
+
+export function formatMoney(amount: number, code: CurrencyCode, locale: string): string {
+  const { group, symbolAfter } = styles[locale] ?? styles.en;
+  const rounded = Math.round(amount);
+  const digits = Math.abs(rounded).toString().replace(/\B(?=(\d{3})+(?!\d))/g, group);
+  const sign = rounded < 0 ? "-" : "";
+  return symbolAfter ? `${sign}${digits}${NBSP}${symbols[code]}` : `${sign}${symbols[code]}${digits}`;
 }

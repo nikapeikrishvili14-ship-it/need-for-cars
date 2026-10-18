@@ -11,11 +11,11 @@ export default async function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-night/90 backdrop-blur">
-      <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 lg:px-8">
+      <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 lg:px-8 xl:gap-6">
         <Logo className="w-24 lg:w-28" />
 
         <nav aria-label={t("main")} className="hidden lg:block">
-          <NavLinks className="flex items-center gap-7 text-sm font-medium" />
+          <NavLinks className="flex items-center gap-5 text-sm font-medium xl:gap-7" />
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">

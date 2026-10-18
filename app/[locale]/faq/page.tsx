@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { site } from "@/data/site";
-import { faqGroups, fillSiteTokens } from "@/lib/siteText";
+import { deliveryRulesText, faqGroups, fillSiteTokens } from "@/lib/siteText";
 import { whatsappUrl } from "@/lib/whatsapp";
 import { staticPageMetadata } from "@/lib/seo";
 import PageTitle from "@/components/PageTitle";
@@ -26,13 +26,21 @@ export default async function FaqPage({ params }: PageProps<"/[locale]/faq">) {
   const t = await getTranslations("pages.faq");
   const tf = await getTranslations("faq");
   const tPrice = await getTranslations("price");
-  const refundTime = tPrice("refundTime", { days: site.depositRefundDays });
+  const tDelivery = await getTranslations("delivery");
+  const tokens = {
+    refundTime: tPrice("refundTime", { days: site.depositRefundDays }),
+    deliveryRules: deliveryRulesText(locale, {
+      free: tDelivery("free"),
+      freeFrom: (days) => tDelivery("freeFrom", { days }),
+    }),
+  };
 
   const items = site.faq.map((item, i) => ({
     id: `q${i + 1}`,
     group: item.group,
     question: item.question[locale],
-    answer: item.answer ? fillSiteTokens(item.answer[locale], locale, refundTime) : undefined,
+    answer: item.answer ? fillSiteTokens(item.answer[locale], locale, tokens) : undefined,
+    ask: item.ask,
   }));
   const groups = faqGroups.filter((g) => items.some((item) => item.group === g));
 
@@ -91,7 +99,13 @@ export default async function FaqPage({ params }: PageProps<"/[locale]/faq">) {
                           />
                         </summary>
                         <div className="max-w-2xl pb-6 text-fg/80">
-                          {item.answer ? <p>{item.answer}</p> : <AskUs topic={item.question} />}
+                          {!item.answer ? (
+                            <AskUs topic={item.question} />
+                          ) : item.ask ? (
+                            <AskUs topic={item.question}>{item.answer}</AskUs>
+                          ) : (
+                            <p>{item.answer}</p>
+                          )}
                         </div>
                       </details>
                     ))}

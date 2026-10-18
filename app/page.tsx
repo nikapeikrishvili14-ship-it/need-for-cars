@@ -16,7 +16,7 @@ export default function RootRedirect() {
       </head>
       <body style={{ background: "#0B0B0D" }}>
         <a href={target} style={{ color: "#F5F5F5" }}>
-          Need for Cars
+          Need For Cars
         </a>
       </body>
     </html>

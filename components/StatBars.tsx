@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import type { Car } from "@/data/cars";
 import { fleet } from "@/lib/fleet";
 import { formatDecimal } from "@/lib/money";
+import TunedBadge from "./TunedBadge";
 
 const SEGMENTS = 20;
 
@@ -24,10 +25,11 @@ export default function StatBars({ car, variant = "stacked" }: Props) {
   const locale = useLocale();
   const ref = useRef<HTMLDListElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
-  const { hp, acceleration, topSpeed } = car.specs;
+  const { hp, tuned, acceleration, topSpeed } = car.specs;
+  const badge = tuned ? <TunedBadge label={t("tuned")} className="mr-2" /> : null;
 
   const stats = [
-    { label: t("specs.power"), value: t("units.hp", { value: hp }), ratio: hp / fleet.maxHp },
+    { label: t("specs.power"), value: t("units.hp", { value: hp }), badge, ratio: hp / fleet.maxHp },
     {
       label: t("specs.acceleration"),
       value: t("units.seconds", { value: formatDecimal(acceleration, locale) }),
@@ -65,7 +67,10 @@ export default function StatBars({ car, variant = "stacked" }: Props) {
             <dt className="text-sm text-muted">{stat.label}</dt>
             <dd className="contents">
               {bar(stat.ratio, row)}
-              <span className="text-right font-heading font-bold italic">{stat.value}</span>
+              <span className="text-right font-heading font-bold whitespace-nowrap italic">
+                {stat.badge}
+                {stat.value}
+              </span>
             </dd>
           </div>
         ))}
@@ -79,7 +84,10 @@ export default function StatBars({ car, variant = "stacked" }: Props) {
         <div key={stat.label}>
           <div className="mb-1.5 flex items-baseline justify-between gap-4">
             <dt className="text-sm text-muted">{stat.label}</dt>
-            <dd className="font-heading text-lg font-bold italic">{stat.value}</dd>
+            <dd className="font-heading text-lg font-bold italic">
+              {stat.badge}
+              {stat.value}
+            </dd>
           </div>
           {bar(stat.ratio, row)}
         </div>

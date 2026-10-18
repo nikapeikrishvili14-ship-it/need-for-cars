@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ChevronRight } from "lucide-react";
-import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { cars } from "@/data/cars";
 import { site } from "@/data/site";
@@ -10,7 +8,6 @@ import { staticPageMetadata } from "@/lib/seo";
 import StudioBackdrop from "@/components/garage/StudioBackdrop";
 import CarModel from "@/components/garage/CarModel";
 import SlantLink from "@/components/SlantLink";
-import Price from "@/components/Price";
 import AskUs from "@/components/AskUs";
 import Section, { SectionHeading } from "@/components/home/Section";
 import DeliveryCities from "@/components/home/DeliveryCities";
@@ -60,9 +57,24 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
       </div>
 
       {site.story && (
-        <div className="mx-auto max-w-7xl px-4 pb-16 lg:px-8">
-          <h2 className="text-3xl font-black italic sm:text-4xl">{t("storyTitle")}</h2>
-          <p className="mt-4 max-w-2xl whitespace-pre-line text-fg/85">{site.story[locale]}</p>
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 pb-16 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start sm:gap-12 lg:px-8">
+          {/* Years in business, outlined like the grid-slot numbers on the home page */}
+          <p className="flex items-end gap-3 sm:flex-col sm:items-start sm:gap-1">
+            <span
+              aria-hidden="true"
+              className="font-heading text-8xl leading-none font-black text-transparent italic [-webkit-text-stroke:2px_var(--color-accent)] sm:text-9xl"
+            >
+              {site.yearsOnRoad}
+            </span>
+            <span className="pb-2 font-heading text-lg font-bold italic sm:pb-0">
+              <span className="sr-only">{site.yearsOnRoad} </span>
+              {t("yearsOnRoad", { count: site.yearsOnRoad })}
+            </span>
+          </p>
+          <div>
+            <h2 className="text-3xl font-black italic sm:text-4xl">{t("storyTitle")}</h2>
+            <p className="mt-4 max-w-2xl whitespace-pre-line text-fg/85">{site.story[locale]}</p>
+          </div>
         </div>
       )}
 
@@ -72,58 +84,26 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
 
           <dl className="mt-10 border-b border-line">
             <TermRow title={t("terms.deposit")}>
-              {t.rich("terms.depositText", {
-                amount: () => <Price usd={site.deposit} className="text-fg" />,
-                refund,
-              })}
+              <AskUs topic={t("terms.deposit")}>{tPrice("deposit", { refund })}</AskUs>
             </TermRow>
 
-            <TermRow title={t("terms.insurance")}>{tCar("insurance")}</TermRow>
+            <TermRow title={t("terms.insurance")}>
+              <AskUs topic={t("terms.insurance")}>{t("terms.insuranceText")}</AskUs>
+            </TermRow>
 
             <TermRow title={t("terms.requirements")}>
-              <p>{t("terms.requirementsText")}</p>
-              <div className="mt-4 max-w-xl overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="text-muted">
-                    <tr className="border-b border-line">
-                      <th scope="col" className="py-2 pr-4 font-normal">
-                        {t("terms.car")}
-                      </th>
-                      <th scope="col" className="py-2 pr-4 font-normal">
-                        {tCar("minAge")}
-                      </th>
-                      <th scope="col" className="py-2 font-normal">
-                        {tCar("minExperience")}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cars.map((car) => (
-                      <tr key={car.slug} className="border-b border-line/60 last:border-0">
-                        <th scope="row" className="py-2.5 pr-4 font-semibold">
-                          <Link href={`/cars/${car.slug}`} className="text-fg transition-colors hover:text-accent">
-                            {car.brand} {car.model}
-                          </Link>
-                        </th>
-                        <td className="py-2.5 pr-4 whitespace-nowrap">{tCar("years", { count: car.minAge })}</td>
-                        <td className="py-2.5 whitespace-nowrap">{tCar("years", { count: car.minExperience })}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <Link
-                href="/cars"
-                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline"
-              >
-                {t("terms.allCars")}
-                <ChevronRight size={16} aria-hidden="true" />
-              </Link>
+              <AskUs topic={t("terms.requirements")}>{tCar("requirementsText")}</AskUs>
             </TermRow>
 
             {site.rentalTerms.map((term) => (
               <TermRow key={term.id} title={term.title[locale]}>
-                {term.text ? <p>{term.text[locale]}</p> : <AskUs topic={term.title[locale]} />}
+                {!term.text ? (
+                  <AskUs topic={term.title[locale]} />
+                ) : term.ask ? (
+                  <AskUs topic={term.title[locale]}>{term.text[locale]}</AskUs>
+                ) : (
+                  <p>{term.text[locale]}</p>
+                )}
               </TermRow>
             ))}
           </dl>

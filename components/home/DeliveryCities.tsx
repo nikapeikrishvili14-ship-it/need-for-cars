@@ -3,11 +3,13 @@ import { MapPin } from "lucide-react";
 import { site } from "@/data/site";
 import type { Locale } from "@/i18n/routing";
 import Price from "@/components/Price";
+import AskUs from "@/components/AskUs";
 import Section, { SectionHeading } from "./Section";
 
+// Delivery places with their fees and free-delivery rules (data/site.ts → cities)
 export default async function DeliveryCities({ tone = "surface" }: { tone?: "night" | "surface" }) {
   const t = await getTranslations("home.delivery");
-  const tBooking = await getTranslations("booking");
+  const td = await getTranslations("delivery");
   const locale = (await getLocale()) as Locale;
 
   return (
@@ -29,19 +31,26 @@ export default async function DeliveryCities({ tone = "surface" }: { tone?: "nig
                 <p className="font-heading text-2xl font-bold italic">{city.name[locale]}</p>
                 <p className="mt-1 text-sm text-muted">
                   {city.deliveryFee === 0 ? (
-                    <span className="font-semibold text-accent">{tBooking("free")}</span>
+                    <span className="font-semibold text-accent capitalize">{td("free")}</span>
                   ) : (
                     t.rich("fee", { amount: () => <Price usd={city.deliveryFee} className="text-fg" /> })
                   )}
                 </p>
+                {city.deliveryFee > 0 && city.freeFromDays && (
+                  <p className="slant mt-3 inline-block bg-accent/10 px-2.5 py-1 text-xs font-semibold text-accent">
+                    <span className="unslant">{td("freeFromBadge", { days: city.freeFromDays })}</span>
+                  </p>
+                )}
               </div>
             </li>
           ))}
         </ul>
 
-        <p className="mt-6 text-sm text-muted">
-          {t.rich("custom", { amount: () => <Price usd={site.customAddressFee} className="text-fg" /> })}
-        </p>
+        <div className="mt-6 text-sm">
+          <AskUs topic={t("askTopic")}>
+            <span className="text-muted">{t("other")}</span>
+          </AskUs>
+        </div>
       </div>
     </Section>
   );

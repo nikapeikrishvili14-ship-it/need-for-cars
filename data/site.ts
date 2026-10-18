@@ -3,38 +3,41 @@ import type { CurrencyCode, Localized } from "./types";
 export type City = {
   id: string;
   name: Localized;
-  /** Fee in USD to deliver the car here or collect it from here (0 = free) */
+  /**
+   * Places in the same area share a region. Returning the car in another
+   * region is possible, but its fee is "ask us" (not in the estimate).
+   */
+  region: string;
+  /** Fee in USD to deliver the car here (0 = free). Also covers collecting it here at the end. */
   deliveryFee: number;
-};
-
-export type Extra = {
-  id: string;
-  name: Localized;
-  /** Price in USD */
-  price: number;
-  per: "day" | "rental";
+  /** Delivery here is free for rentals of at least this many days */
+  freeFromDays?: number;
 };
 
 export type FaqGroup = "booking" | "payment" | "delivery" | "requirements";
 
 /**
  * Answers may use these tokens, filled in from this file so values live in
- * one place: {deposit} (deposit amount), {refundTime} (e.g. "1 working day"),
- * {cities} (delivery cities), {customFee} (pickup/drop-off at a custom address).
+ * one place: {refundTime} (e.g. "1 working day"), {cities} (delivery places),
+ * {deliveryRules} (each place with its fee and free-delivery rule).
  */
 export type FaqItem = {
   group: FaqGroup;
   question: Localized;
   /** Leave undefined until the owner confirms it — the site then shows "Contact us for details" */
   answer?: Localized;
+  /** Add an "Ask on WhatsApp" link after the answer (for answers that say "ask us") */
+  ask?: boolean;
 };
 
-/** A rental rule shown on the About page (deposit, insurance and age rules are built from the data) */
+/** A rental rule shown on the About page (deposit, insurance and driver rules come from messages/*.json) */
 export type RentalTerm = {
   id: string;
   title: Localized;
   /** Leave undefined until the owner confirms it — the site then shows "Contact us for details" */
   text?: Localized;
+  /** Add an "Ask on WhatsApp" link after the text */
+  ask?: boolean;
 };
 
 export type SiteConfig = {
@@ -45,7 +48,10 @@ export type SiteConfig = {
     /** Digits only with country code, used for wa.me links */
     whatsapp: string;
     email: string;
+    /** Shown as the location (no street address) */
     address: Localized;
+    /** City for Google (structured data) */
+    city: Localized;
     /** Google Maps embed URL (Share → Embed a map → src) */
     mapEmbedUrl: string;
     hours: Localized;
@@ -55,13 +61,10 @@ export type SiteConfig = {
     facebook?: string;
   };
   cities: City[];
-  extras: Extra[];
-  /** Fee in USD for pickup or drop-off at a customer-chosen address */
-  customAddressFee: number;
-  /** Refundable deposit in USD — shown separately, never added to the total */
-  deposit: number;
   /** Working days after the car is returned until the deposit is refunded. Used in every sentence that mentions it. */
   depositRefundDays: number;
+  /** Years in business, shown as a stat next to the story on the About page */
+  yearsOnRoad: number;
   baseCurrency: "USD";
   /** Fixed rates: 1 USD = X. Converted prices are shown as "approx." */
   currencyRates: Record<CurrencyCode, number>;
@@ -76,8 +79,18 @@ export type SiteConfig = {
   hero: {
     /** Short muted loop, e.g. /hero/garage.mp4 (keep it under ~4 MB) */
     video?: string;
-    /** Still photo; also used as the video's poster frame */
+    /**
+     * Still photo (JPG), car in the middle; also used as the video's poster frame.
+     * WebP copies next to it named <name>-1280.webp, <name>-1920.webp and
+     * <name>-2750.webp are picked up automatically, so each screen gets the right size.
+     */
     image?: string;
+    /** The photo's size in px — its shape sets the hero's height on large screens */
+    imageSize?: { width: number; height: number };
+    /** Where the car begins, as a share of the photo's width from the left (0.31 = 31%). The text stays left of it. */
+    carStart?: number;
+    /** Slug of the fleet car in the photo (data/cars.ts), used for its description */
+    car?: string;
   };
   reviews: Review[];
 };
@@ -92,75 +105,94 @@ export type Review = {
 };
 
 export const site: SiteConfig = {
-  name: "Need for Cars",
+  name: "Need For Cars",
   contacts: {
-    phone: "+995 555 00 00 00", // TODO(owner): real phone number
-    whatsapp: "995555000000", // TODO(owner): real WhatsApp number (digits only)
-    email: "info@example.com", // TODO(owner): real email
-    address: {
-      // TODO(owner): real office / pickup address
-      en: "Tbilisi, Georgia",
-      ka: "თბილისი, საქართველო",
-      ru: "Тбилиси, Грузия",
-    },
-    // TODO(owner): Google Maps embed link for the office
-    mapEmbedUrl: "https://www.google.com/maps?q=Tbilisi&output=embed",
+    phone: "+995 571 80 77 77",
+    whatsapp: "995571807777",
+    email: "mindiashvilishota6@gmail.com",
+    address: { en: "Tbilisi, Georgia", ka: "თბილისი, საქართველო", ru: "Тбилиси, Грузия" },
+    city: { en: "Tbilisi", ka: "თბილისი", ru: "Тбилиси" },
+    mapEmbedUrl: "https://maps.google.com/maps?q=Tbilisi%2C%20Georgia&z=12&output=embed",
     hours: {
-      // TODO(owner): real working hours
-      en: "Every day, 09:00–21:00",
-      ka: "ყოველდღე, 09:00–21:00",
-      ru: "Ежедневно, 09:00–21:00",
+      en: "24/7 — we reply any time",
+      ka: "24/7 — გიპასუხებთ ნებისმიერ დროს",
+      ru: "24/7 — отвечаем в любое время",
     },
-    // TODO(owner): keep in sync with `hours` above
-    openingHours: { days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"], opens: "09:00", closes: "21:00" },
+    // Keep in sync with `hours` above
+    openingHours: { days: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"], opens: "00:00", closes: "23:59" },
     instagram: undefined, // TODO(owner): Instagram URL
     facebook: undefined, // TODO(owner): Facebook URL
   },
+  // Hotel or home address delivery and returns in another city: "ask us" (no fixed price)
   cities: [
-    // TODO(owner): confirm delivery cities and fees (placeholder prices)
-    { id: "tbilisi", name: { en: "Tbilisi", ka: "თბილისი", ru: "Тбилиси" }, deliveryFee: 0 },
-    { id: "tbilisi-airport", name: { en: "Tbilisi Airport", ka: "თბილისის აეროპორტი", ru: "Аэропорт Тбилиси" }, deliveryFee: 20 },
-    { id: "batumi", name: { en: "Batumi", ka: "ბათუმი", ru: "Батуми" }, deliveryFee: 150 },
-    { id: "kutaisi", name: { en: "Kutaisi", ka: "ქუთაისი", ru: "Кутаиси" }, deliveryFee: 100 },
+    { id: "tbilisi", name: { en: "Tbilisi", ka: "თბილისი", ru: "Тбилиси" }, region: "tbilisi", deliveryFee: 0 },
+    {
+      id: "tbilisi-airport",
+      name: { en: "Tbilisi Airport", ka: "თბილისის აეროპორტი", ru: "Аэропорт Тбилиси" },
+      region: "tbilisi",
+      deliveryFee: 50,
+      freeFromDays: 3,
+    },
+    {
+      id: "kutaisi-airport",
+      name: { en: "Kutaisi Airport", ka: "ქუთაისის აეროპორტი", ru: "Аэропорт Кутаиси" },
+      region: "kutaisi",
+      deliveryFee: 150,
+      freeFromDays: 7,
+    },
+    { id: "batumi", name: { en: "Batumi", ka: "ბათუმი", ru: "Батуми" }, region: "batumi", deliveryFee: 200 },
   ],
-  extras: [
-    // TODO(owner): confirm extras and prices (placeholder prices)
-    { id: "child-seat", name: { en: "Child seat", ka: "ბავშვის სავარძელი", ru: "Детское кресло" }, price: 10, per: "day" },
-    { id: "additional-driver", name: { en: "Additional driver", ka: "დამატებითი მძღოლი", ru: "Дополнительный водитель" }, price: 20, per: "rental" },
-  ],
-  customAddressFee: 30, // TODO(owner): price for delivery/collection at a custom address
-  deposit: 100,
   depositRefundDays: 1,
+  yearsOnRoad: 8,
   baseCurrency: "USD",
   currencyRates: {
     USD: 1,
-    GEL: 2.7, // TODO(owner): confirm fixed GEL rate
-    EUR: 0.92, // TODO(owner): confirm fixed EUR rate
+    GEL: 2.6,
+    EUR: 0.89,
   },
-  story: undefined, // TODO(owner): a few sentences — when you started, why, what makes you different
+  // Keep the number of years in sync with `yearsOnRoad`
+  story: {
+    en: "For 8 years, Need For Cars has been putting drivers in Georgia behind the wheel of cars most people only see on posters. Corvettes, AMGs, M-cars — every one of them kept in top shape and ready to go. Message us any time, day or night: we answer, we deliver, you drive.",
+    ka: "უკვე 8 წელია, Need For Cars საქართველოში მძღოლებს იმ მანქანების საჭესთან სვამს, რომლებსაც უმეტესობა მხოლოდ პოსტერებზე ხედავს. Corvette, AMG, BMW M — თითოეული იდეალურ მდგომარეობაშია და გზისთვის მზადაა. მოგვწერე ნებისმიერ დროს, დღე თუ ღამე: ჩვენ გიპასუხებთ, მანქანას მოგიყვანთ, შენ კი საჭესთან დაჯდები.",
+    ru: "Уже 8 лет Need For Cars сажает водителей в Грузии за руль машин, которые большинство видит только на постерах. Corvette, AMG, BMW M — каждая в отличном состоянии и готова к дороге. Пишите нам в любое время, днём и ночью: мы отвечаем, привозим машину, а вы едете.",
+  },
 
   // Shown on the About page under the deposit, insurance and driver-requirement
-  // rules (those come from `deposit` above and data/cars.ts).
+  // rules (those come from messages/*.json → about.terms).
   rentalTerms: [
     {
       id: "documents",
       title: { en: "Documents", ka: "საბუთები", ru: "Документы" },
-      text: undefined, // TODO(owner): e.g. passport + driving licence (international licence needed?)
+      text: {
+        en: "ID card and driving licence.",
+        ka: "პირადობის მოწმობა და მართვის მოწმობა.",
+        ru: "Удостоверение личности и водительские права.",
+      },
     },
     {
-      id: "fuel",
-      title: { en: "Fuel policy", ka: "საწვავი", ru: "Топливо" },
-      text: undefined, // TODO(owner): e.g. full-to-full
+      id: "minimum-rental",
+      title: { en: "Minimum rental", ka: "მინიმალური ვადა", ru: "Минимальный срок" },
+      text: { en: "1 day.", ka: "1 დღე.", ru: "1 сутки." },
+    },
+    {
+      id: "long-rentals",
+      title: { en: "Long rentals", ka: "ხანგრძლივი ქირაობა", ru: "Долгая аренда" },
+      text: {
+        en: "The longer you rent, the lower the daily price — discounts depend on the car. Ask us for your price.",
+        ka: "რაც უფრო დიდხანს ქირაობ, მით უფრო დაბალია დღიური ფასი — ფასდაკლება მანქანაზეა დამოკიდებული. გვკითხე შენი ფასი.",
+        ru: "Чем дольше аренда, тем ниже цена за сутки — скидка зависит от автомобиля. Спросите нас о вашей цене.",
+      },
+      ask: true,
     },
     {
       id: "mileage",
-      title: { en: "Mileage limit", ka: "გარბენის ლიმიტი", ru: "Лимит пробега" },
-      text: undefined, // TODO(owner): km per day, price per extra km
-    },
-    {
-      id: "late-return",
-      title: { en: "Late return", ka: "დაგვიანებით დაბრუნება", ru: "Поздний возврат" },
-      text: undefined, // TODO(owner): grace period and fee
+      title: { en: "Mileage", ka: "გარბენი", ru: "Пробег" },
+      text: {
+        en: "Mileage isn't unlimited. Planning long trips? Ask us — mileage depends on where you go.",
+        ka: "გარბენი შეუზღუდავი არ არის. გეგმავ შორ მოგზაურობას? გვკითხე — გარბენი იმაზეა დამოკიდებული, სად მიდიხარ.",
+        ru: "Пробег не безлимитный. Планируете дальние поездки? Спросите нас — пробег зависит от маршрута.",
+      },
+      ask: true,
     },
     {
       id: "outside-georgia",
@@ -169,17 +201,32 @@ export const site: SiteConfig = {
         ka: "საქართველოს ფარგლებს გარეთ მგზავრობა",
         ru: "Выезд за пределы Грузии",
       },
-      text: undefined, // TODO(owner): allowed or not, which countries
+      text: {
+        en: "Not allowed.",
+        ka: "დაშვებული არ არის.",
+        ru: "Не разрешён.",
+      },
     },
     {
-      id: "smoking-pets",
-      title: { en: "Smoking and pets", ka: "მოწევა და შინაური ცხოველები", ru: "Курение и животные" },
-      text: undefined, // TODO(owner)
+      id: "traffic-fines",
+      title: { en: "Traffic fines", ka: "საჯარიმო ქვითრები", ru: "Штрафы" },
+      text: {
+        en: "We pay fines first; you pay us back when you return the car.",
+        ka: "ჯარიმას ჯერ ჩვენ ვიხდით, შენ კი თანხას მანქანის დაბრუნებისას გვიბრუნებ.",
+        ru: "Сначала штраф оплачиваем мы, а вы возвращаете нам сумму при возврате автомобиля.",
+      },
     },
     {
-      id: "cancellation",
-      title: { en: "Cancellation", ka: "ჯავშნის გაუქმება", ru: "Отмена бронирования" },
-      text: undefined, // TODO(owner): free until when, fees after that
+      id: "late-return",
+      title: { en: "Late return", ka: "დაგვიანებით დაბრუნება", ru: "Поздний возврат" },
+      text: undefined, // "Ask us" — the site shows "Contact us for details" + WhatsApp link
+    },
+    {
+      id: "booking-payment",
+      title: { en: "Booking payment", ka: "ჯავშნის საფასური", ru: "Оплата бронирования" },
+      // TODO(owner): confirm wording — booking payment amount per car, non-refundable
+      // on cancellation? Same as the deposit or extra? Until then: "Contact us for details".
+      text: undefined,
     },
   ],
 
@@ -202,7 +249,11 @@ export const site: SiteConfig = {
         ka: "რამდენი ხნით ადრე უნდა დავჯავშნო?",
         ru: "За сколько времени нужно бронировать?",
       },
-      answer: undefined, // TODO(owner)
+      answer: {
+        en: "Same-day booking is possible if the car is free. Still, the earlier you book, the better.",
+        ka: "თუ მანქანა თავისუფალია, დაჯავშნა იმავე დღესაც შეიძლება. მაინც, რაც უფრო ადრე დაჯავშნი, მით უკეთესი.",
+        ru: "Забронировать можно и в тот же день, если машина свободна. Но чем раньше, тем лучше.",
+      },
     },
     {
       group: "booking",
@@ -211,21 +262,42 @@ export const site: SiteConfig = {
         ka: "შემიძლია ჯავშნის შეცვლა ან გაუქმება?",
         ru: "Можно ли изменить или отменить бронирование?",
       },
-      answer: undefined, // TODO(owner): match the cancellation term above
+      // TODO(owner): confirm together with the booking payment term (refundable on cancellation?)
+      answer: undefined,
     },
     {
       group: "payment",
       question: { en: "Is there a deposit?", ka: "არის დეპოზიტი?", ru: "Нужен ли депозит?" },
       answer: {
-        en: "Yes, a refundable deposit of {deposit}. You pay it when you get the car, and we return it {refundTime} after you bring the car back. It isn't part of the rental price.",
-        ka: "დიახ, დასაბრუნებელი დეპოზიტი — {deposit}. მას იხდი მანქანის მიღებისას და გიბრუნდება მანქანის დაბრუნებიდან {refundTime}. ის ქირის ფასში არ შედის.",
-        ru: "Да, возвратный депозит {deposit}. Он оплачивается при получении автомобиля и возвращается через {refundTime} после возврата машины. В стоимость аренды он не входит.",
+        en: "Yes. The deposit depends on the car — ask us. You pay it by card or cash, and we refund it {refundTime} after you return the car. It isn't part of the rental price.",
+        ka: "დიახ. დეპოზიტი მანქანაზეა დამოკიდებული — გვკითხე. მას იხდი ბარათით ან ნაღდით და გიბრუნდება მანქანის დაბრუნებიდან {refundTime}. ის ქირის ფასში არ შედის.",
+        ru: "Да. Размер депозита зависит от автомобиля — спросите нас. Он оплачивается картой или наличными и возвращается через {refundTime} после возврата машины. В стоимость аренды он не входит.",
       },
+      ask: true,
     },
     {
       group: "payment",
       question: { en: "How do I pay for the rental?", ka: "როგორ გადავიხადო ქირა?", ru: "Как оплатить аренду?" },
-      answer: undefined, // TODO(owner): cash / card / transfer, and when (at pickup?)
+      answer: {
+        en: "The deposit is paid by card or cash. For rental payment details, ask us.",
+        ka: "დეპოზიტი იხდება ბარათით ან ნაღდით. ქირის გადახდის დეტალებისთვის გვკითხე.",
+        ru: "Депозит оплачивается картой или наличными. Детали оплаты аренды уточните у нас.",
+      },
+      ask: true,
+    },
+    {
+      group: "payment",
+      question: {
+        en: "Is it cheaper to rent for longer?",
+        ka: "უფრო დიდხანს ქირაობა უფრო იაფია?",
+        ru: "Дешевле ли арендовать надолго?",
+      },
+      answer: {
+        en: "Yes. The longer you rent, the lower the daily price — discounts depend on the car. Ask us for your price.",
+        ka: "დიახ. რაც უფრო დიდხანს ქირაობ, მით უფრო დაბალია დღიური ფასი — ფასდაკლება მანქანაზეა დამოკიდებული. გვკითხე შენი ფასი.",
+        ru: "Да. Чем дольше аренда, тем ниже цена за сутки — скидка зависит от автомобиля. Спросите нас о вашей цене.",
+      },
+      ask: true,
     },
     {
       group: "payment",
@@ -235,9 +307,9 @@ export const site: SiteConfig = {
         ru: "Цены на сайте окончательные?",
       },
       answer: {
-        en: "Prices are per day in US dollars. Amounts in GEL and EUR are approximate, converted at a fixed rate. The booking form shows an estimate, and we confirm the final price before you book.",
-        ka: "ფასები მითითებულია დღეში, აშშ დოლარში. ლარსა და ევროში თანხები მიახლოებითია, გადაყვანილი ფიქსირებული კურსით. ჯავშნის ფორმა გაჩვენებს სავარაუდო ფასს, საბოლოო ფასს კი ჯავშნამდე დაგიდასტურებთ.",
-        ru: "Цены указаны за сутки в долларах США. Суммы в лари и евро приблизительные — они пересчитаны по фиксированному курсу. Форма бронирования показывает примерную стоимость, а итоговую цену мы подтвердим до бронирования.",
+        en: "Prices are per day in US dollars. Amounts in GEL and EUR are approximate, converted at a fixed rate. The booking form shows an estimate at the normal daily price; longer rentals cost less per day, and we confirm the final price before you book.",
+        ka: "ფასები მითითებულია დღეში, აშშ დოლარში. ლარსა და ევროში თანხები მიახლოებითია, გადაყვანილი ფიქსირებული კურსით. ჯავშნის ფორმა გაჩვენებს სავარაუდო ფასს ჩვეულებრივი დღიური ტარიფით; ხანგრძლივი ქირაობისას დღიური ფასი უფრო დაბალია, საბოლოო ფასს კი ჯავშნამდე დაგიდასტურებთ.",
+        ru: "Цены указаны за сутки в долларах США. Суммы в лари и евро приблизительные — они пересчитаны по фиксированному курсу. Форма бронирования показывает примерную стоимость по обычному тарифу; при долгой аренде цена за сутки ниже, а итоговую цену мы подтвердим до бронирования.",
       },
     },
     {
@@ -248,10 +320,11 @@ export const site: SiteConfig = {
         ru: "Где можно получить автомобиль?",
       },
       answer: {
-        en: "We deliver to {cities}. We can also bring the car to another address, like your hotel, for {customFee}.",
-        ka: "მანქანას მოგაწვდით აქ: {cities}. შეგვიძლია სხვა მისამართზეც მოგიყვანოთ, მაგალითად სასტუმროსთან — {customFee}.",
-        ru: "Мы доставляем автомобиль сюда: {cities}. Можем подать машину и по другому адресу, например к вашему отелю, — за {customFee}.",
+        en: "We deliver the car here: {deliveryRules}. Delivery to your hotel or home address is possible too — ask us.",
+        ka: "მანქანას მოგაწვდით აქ: {deliveryRules}. შესაძლებელია სასტუმროსთან ან სახლთან მიყვანაც — გვკითხე.",
+        ru: "Мы доставляем автомобиль сюда: {deliveryRules}. Можно и к вашему отелю или дому — спросите нас.",
       },
+      ask: true,
     },
     {
       group: "delivery",
@@ -261,9 +334,9 @@ export const site: SiteConfig = {
         ru: "Можете встретить меня в аэропорту?",
       },
       answer: {
-        en: "Yes. Choose Tbilisi Airport as the pickup location and add your flight number to the booking form, so we can meet you on time.",
-        ka: "დიახ. აყვანის ადგილად აირჩიე თბილისის აეროპორტი და ჯავშნის ფორმაში მიუთითე რეისის ნომერი, რომ დროულად დაგხვდეთ.",
-        ru: "Да. Выберите Аэропорт Тбилиси местом получения и укажите номер рейса в форме бронирования — так мы встретим вас вовремя.",
+        en: "Yes, at Tbilisi or Kutaisi Airport. Choose the airport as the pickup location and add your flight number to the booking form, so we can meet you on time.",
+        ka: "დიახ, თბილისის ან ქუთაისის აეროპორტში. აყვანის ადგილად აირჩიე აეროპორტი და ჯავშნის ფორმაში მიუთითე რეისის ნომერი, რომ დროულად დაგხვდეთ.",
+        ru: "Да, в аэропорту Тбилиси или Кутаиси. Выберите аэропорт местом получения и укажите номер рейса в форме бронирования — так мы встретим вас вовремя.",
       },
     },
     {
@@ -274,10 +347,11 @@ export const site: SiteConfig = {
         ru: "Можно ли вернуть автомобиль в другом городе?",
       },
       answer: {
-        en: "Yes. Choose the drop-off location in the booking form. The fee depends on the city and is shown in the estimate.",
-        ka: "დიახ. ჯავშნის ფორმაში აირჩიე დაბრუნების ადგილი. საფასური ქალაქზეა დამოკიდებული და სავარაუდო ფასში ჩანს.",
-        ru: "Да. Выберите место возврата в форме бронирования. Стоимость зависит от города и видна в расчёте.",
+        en: "Yes, it's possible. The fee depends on the location — ask us.",
+        ka: "დიახ, შესაძლებელია. საფასური ადგილზეა დამოკიდებული — გვკითხე.",
+        ru: "Да, это возможно. Стоимость зависит от места — спросите нас.",
       },
+      ask: true,
     },
     {
       group: "requirements",
@@ -287,15 +361,20 @@ export const site: SiteConfig = {
         ru: "С какого возраста можно арендовать автомобиль?",
       },
       answer: {
-        en: "It depends on the car. Each car's page shows its minimum driver age and driving experience.",
-        ka: "ეს მანქანაზეა დამოკიდებული. თითოეული მანქანის გვერდზე მითითებულია მძღოლის მინიმალური ასაკი და მართვის სტაჟი.",
-        ru: "Это зависит от автомобиля. На странице каждой машины указаны минимальный возраст водителя и стаж вождения.",
+        en: "Driver age and experience requirements depend on the car — ask us about the one you want.",
+        ka: "მძღოლის ასაკისა და სტაჟის მოთხოვნები მანქანაზეა დამოკიდებული — გვკითხე იმ მანქანის შესახებ, რომელიც მოგწონს.",
+        ru: "Требования к возрасту и стажу водителя зависят от автомобиля — спросите нас о машине, которая вам нравится.",
       },
+      ask: true,
     },
     {
       group: "requirements",
       question: { en: "What documents do I need?", ka: "რა საბუთები მჭირდება?", ru: "Какие документы нужны?" },
-      answer: undefined, // TODO(owner): match the documents term above
+      answer: {
+        en: "An ID card and a driving licence.",
+        ka: "პირადობის მოწმობა და მართვის მოწმობა.",
+        ru: "Удостоверение личности и водительские права.",
+      },
     },
     {
       group: "requirements",
@@ -304,12 +383,43 @@ export const site: SiteConfig = {
         ka: "შემიძლია მანქანით საქართველოს ფარგლებს გარეთ გასვლა?",
         ru: "Можно ли выезжать на автомобиле за пределы Грузии?",
       },
-      answer: undefined, // TODO(owner): match the "driving outside Georgia" term above
+      answer: {
+        en: "No, driving outside Georgia isn't allowed.",
+        ka: "არა, საქართველოს ფარგლებს გარეთ გასვლა დაშვებული არ არის.",
+        ru: "Нет, выезд за пределы Грузии не разрешён.",
+      },
+    },
+    {
+      group: "requirements",
+      question: { en: "Is mileage unlimited?", ka: "გარბენი შეუზღუდავია?", ru: "Пробег безлимитный?" },
+      answer: {
+        en: "No. Planning long trips? Ask us — mileage depends on where you go.",
+        ka: "არა. გეგმავ შორ მოგზაურობას? გვკითხე — გარბენი იმაზეა დამოკიდებული, სად მიდიხარ.",
+        ru: "Нет. Планируете дальние поездки? Спросите нас — пробег зависит от маршрута.",
+      },
+      ask: true,
+    },
+    {
+      group: "requirements",
+      question: {
+        en: "What if I get a traffic fine?",
+        ka: "რა ხდება, თუ ჯარიმა დამეწერა?",
+        ru: "Что, если я получу штраф?",
+      },
+      answer: {
+        en: "We pay the fine first; you pay us back when you return the car.",
+        ka: "ჯარიმას ჯერ ჩვენ ვიხდით, შენ კი თანხას მანქანის დაბრუნებისას გვიბრუნებ.",
+        ru: "Сначала штраф оплачиваем мы, а вы возвращаете нам сумму при возврате автомобиля.",
+      },
     },
   ],
   hero: {
     video: undefined, // TODO(owner): e.g. "/hero/garage.mp4" — short muted loop
-    image: undefined, // TODO(owner): e.g. "/hero/garage.webp" — dark, car lit from above
+    // Remove `image` to switch back to the built-in garage scene
+    image: "/hero/hero-supra.jpg",
+    imageSize: { width: 2750, height: 1536 },
+    carStart: 0.31,
+    car: "toyota-gr-supra",
   },
   // TODO(owner): add real customer reviews. The home page shows a
   // "reviews coming soon" note while this list is empty. Example:

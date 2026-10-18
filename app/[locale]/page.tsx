@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
+import type { Car } from "@/data/cars";
 import { pageMetadata } from "@/lib/seo";
 import { autoRentalSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
@@ -29,10 +30,17 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("meta");
+  const tCar = await getTranslations("car");
+  const labels = {
+    type: (car: Car) => tCar(`types.${car.type}`),
+    colour: (car: Car) => tCar(`colours.${car.colour}`),
+    fuel: (car: Car) => tCar(`fuels.${car.specs.fuel}`),
+    transmission: (car: Car) => tCar(`transmissions.${car.transmission}`),
+  };
 
   return (
     <>
-      <JsonLd data={autoRentalSchema(locale as Locale, t("description"))} />
+      <JsonLd data={autoRentalSchema(locale as Locale, t("description"), labels)} />
       <HomeHero />
       {/* Same base tone as the hero and no edge, so the two read as one garage.
           On desktop it fills one screen (CarSelector sizes the car to fit). */}

@@ -1,4 +1,4 @@
-import { cars } from "@/data/cars";
+import { cars, type Car } from "@/data/cars";
 import { site } from "@/data/site";
 import type { Locale } from "@/i18n/routing";
 import { fleet } from "./fleet";
@@ -6,13 +6,26 @@ import { absoluteUrl, localePath } from "./seo";
 
 const dayNames = { Mo: "Monday", Tu: "Tuesday", We: "Wednesday", Th: "Thursday", Fr: "Friday", Sa: "Saturday", Su: "Sunday" };
 
+const driveConfig: Record<Car["specs"]["drive"], string> = {
+  AWD: "https://schema.org/AllWheelDriveConfiguration",
+  RWD: "https://schema.org/RearWheelDriveConfiguration",
+  FWD: "https://schema.org/FrontWheelDriveConfiguration",
+};
+
+/** Translated car words for the page language (messages → car.*) */
+export type CarLabels = {
+  type: (car: Car) => string;
+  colour: (car: Car) => string;
+  fuel: (car: Car) => string;
+  transmission: (car: Car) => string;
+};
+
 /**
  * schema.org AutoRental for the home page: the company, its contacts, hours,
- * delivery cities and each car's daily price. Everything comes from
- * data/site.ts and data/cars.ts, so placeholder values there (TODO(owner))
- * show up here until the owner fills them in.
+ * delivery places and every car with its specs and daily price. Everything
+ * comes from data/site.ts and data/cars.ts.
  */
-export function autoRentalSchema(locale: Locale, description: string) {
+export function autoRentalSchema(locale: Locale, description: string, labels: CarLabels) {
   const { contacts } = site;
   const home = absoluteUrl(localePath(locale, "/"));
   const sameAs = [contacts.instagram, contacts.facebook].filter(Boolean);
@@ -30,7 +43,7 @@ export function autoRentalSchema(locale: Locale, description: string) {
     email: contacts.email,
     address: {
       "@type": "PostalAddress",
-      streetAddress: contacts.address[locale],
+      addressLocality: contacts.city[locale],
       addressCountry: "GE",
     },
     openingHoursSpecification: {
@@ -39,7 +52,7 @@ export function autoRentalSchema(locale: Locale, description: string) {
       opens: contacts.openingHours.opens,
       closes: contacts.openingHours.closes,
     },
-    areaServed: site.cities.map((city) => ({ "@type": "City", name: city.name[locale] })),
+    areaServed: site.cities.map((city) => ({ "@type": "Place", name: city.name[locale] })),
     priceRange: `$${fleet.minPrice}–$${fleet.maxPrice}`,
     contactPoint: {
       "@type": "ContactPoint",
@@ -47,6 +60,12 @@ export function autoRentalSchema(locale: Locale, description: string) {
       email: contacts.email,
       contactType: "reservations",
       availableLanguage: ["English", "Georgian", "Russian"],
+      hoursAvailable: {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: contacts.openingHours.days.map((d) => `https://schema.org/${dayNames[d]}`),
+        opens: contacts.openingHours.opens,
+        closes: contacts.openingHours.closes,
+      },
     },
     makesOffer: cars.map((car) => ({
       "@type": "Offer",
@@ -54,9 +73,23 @@ export function autoRentalSchema(locale: Locale, description: string) {
       itemOffered: {
         "@type": "Car",
         name: `${car.brand} ${car.model}`,
+        description: car.description[locale],
         brand: { "@type": "Brand", name: car.brand },
         model: car.model,
-        vehicleModelDate: String(car.year),
+        bodyType: labels.type(car),
+        color: labels.colour(car),
+        ...(car.year ? { vehicleModelDate: String(car.year) } : {}),
+        vehicleTransmission: labels.transmission(car),
+        fuelType: labels.fuel(car),
+        driveWheelConfiguration: driveConfig[car.specs.drive],
+        seatingCapacity: car.seats,
+        vehicleEngine: {
+          "@type": "EngineSpecification",
+          name: car.specs.engine,
+          enginePower: { "@type": "QuantitativeValue", value: car.specs.hp, unitCode: "BHP" },
+        },
+        accelerationTime: { "@type": "QuantitativeValue", value: car.specs.acceleration, unitCode: "SEC" },
+        speed: { "@type": "QuantitativeValue", maxValue: car.specs.topSpeed, unitCode: "KMH" },
         image: absoluteUrl(car.photos[0]),
       },
       priceSpecification: {

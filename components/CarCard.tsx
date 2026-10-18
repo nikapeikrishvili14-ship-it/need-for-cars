@@ -8,6 +8,7 @@ import type { Car } from "@/data/cars";
 import StudioBackdrop from "./garage/StudioBackdrop";
 import CarModel from "./garage/CarModel";
 import Price from "./Price";
+import TunedBadge from "./TunedBadge";
 
 // Catalogue card: the car parked in a small garage bay. On hover the lamp
 // brightens, the card lifts and picks up the accent glow.
@@ -55,7 +56,10 @@ export default function CarCard({ car }: { car: Car }) {
         <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
           <li>{t(`transmissions.${car.transmission}`)}</li>
           <li>{t("seats", { count: car.seats })}</li>
-          <li>{t("units.hp", { value: car.specs.hp })}</li>
+          <li>
+            {t("units.hp", { value: car.specs.hp })}
+            {car.specs.tuned && <TunedBadge label={t("tuned")} className="ml-2" />}
+          </li>
         </ul>
 
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-line pt-4">

@@ -12,7 +12,7 @@ export default function Logo({ className = "w-28", lazy = false }: { className?:
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/brand/logo-wordmark.png"
-        alt="Need for Cars"
+        alt="Need For Cars"
         width={480}
         height={177}
         loading={lazy ? "lazy" : undefined}

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 810" width="1440" height="810">
+  <!-- TODO(owner): placeholder — replace with a real photo (public/cars/[slug]/1.webp) -->
+  <defs>
+    <radialGradient id="g" cx="50%" cy="85%" r="60%">
+      <stop offset="0" stop-color="#FF5A1F" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#0B0B0D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="810" fill="#16161A"/>
+  <rect width="1440" height="810" fill="url(#g)"/>
+  <path d="M0 640 L1440 600" stroke="#2A2A31" stroke-width="2"/>
+  <g transform="translate(140 290) scale(0.97)">
+    <svg viewBox="0 0 1200 420" width="1200" height="420"><defs>
+    <linearGradient id="pbody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c8402f"/>
+      <stop offset="0.38" stop-color="#6e1a12"/>
+      <stop offset="1" stop-color="#1e0806"/>
+    </linearGradient>
+    <linearGradient id="pglass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1d2a38"/>
+      <stop offset="0.5" stop-color="#0a0d12"/>
+      <stop offset="1" stop-color="#05060a"/>
+    </linearGradient>
+    <g id="pwheel">
+      <circle r="74" fill="#0b0b0e"/>
+      <circle r="56" fill="#1f1f25" stroke="#3a3a44" stroke-width="3"/>
+      <g stroke="#55555f" stroke-width="7" stroke-linecap="round">
+        <path d="M0 -12 V-48" transform="rotate(0)"/><path d="M0 -12 V-48" transform="rotate(72)"/><path d="M0 -12 V-48" transform="rotate(144)"/><path d="M0 -12 V-48" transform="rotate(216)"/><path d="M0 -12 V-48" transform="rotate(288)"/>
+      </g>
+      <circle r="12" fill="#2b2b32"/>
+    </g>
+  </defs>
+  <g transform="translate(0 28)">
+    <path d="M70 330 L62 290 Q60 262 80 250 C170 215 300 150 470 132 C560 124 640 128 690 150 L800 215 C880 225 1000 238 1080 252 Q1140 262 1142 300 L1138 330 Q1130 345 1100 345 L1013 345 A88 88 0 1 0 847 345 L333 345 A88 88 0 1 0 167 345 L90 345 Q72 345 70 330 Z" fill="url(#pbody)"/>
+    <path d="M300 205 C380 168 460 150 560 148 C620 147 660 152 690 168 L752 212 L310 214 Z" fill="url(#pglass)"/>
+    <path d="M560 149 L548 213" stroke="#0c0c0f" stroke-width="10"/>
+    <path d="M84 252 C200 205 330 150 470 134 C560 126 640 130 690 152 L800 217 C900 228 1010 242 1080 254" fill="none" stroke="#fff" stroke-opacity="0.28" stroke-width="2"/>
+    <path d="M1098 262 Q1128 266 1132 286 L1104 284 Z" fill="#f5f5f5" fill-opacity="0.85"/>
+    <path d="M66 268 L120 256 L118 266 L66 278 Z" fill="#ff3b2f" fill-opacity="0.9"/>
+    <use href="#pwheel" x="250" y="306"/>
+    <use href="#pwheel" x="930" y="306"/>
+  </g></svg>
+  </g>
+  <text x="720" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-style="italic" font-size="44" fill="#F5F5F5">CHEVROLET CORVETTE C7 STINGRAY</text>
+  <text x="720" y="214" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" fill="#8A8A93">PLACEHOLDER · PHOTO 1</text>
+</svg>

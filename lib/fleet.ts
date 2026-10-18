@@ -1,6 +1,6 @@
 import { cars, type CarType, type Transmission } from "@/data/cars";
 
-const allTypes: CarType[] = ["sports", "suv"];
+const allTypes: CarType[] = ["sports", "gt", "suv", "sedan"];
 const allTransmissions: Transmission[] = ["automatic", "manual"];
 
 // Fleet-wide numbers used to scale stat bars and build the catalogue filters.
@@ -12,7 +12,7 @@ export const fleet = {
   bestAcceleration: Math.min(...cars.map((c) => c.specs.acceleration)),
   minPrice: Math.min(...cars.map((c) => c.pricePerDay)),
   maxPrice: Math.max(...cars.map((c) => c.pricePerDay)),
-  /** Only types/transmissions at least one car has, so no filter shows zero results */
+  /** Only types/transmissions at least one car has, so no filter option matches zero cars */
   types: allTypes.filter((type) => cars.some((c) => c.type === type)),
   transmissions: allTransmissions.filter((tr) => cars.some((c) => c.transmission === tr)),
   /**

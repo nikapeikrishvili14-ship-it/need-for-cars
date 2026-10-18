@@ -1,16 +1,10 @@
-"use client";
-
 import { useTranslations } from "next-intl";
 import { site } from "@/data/site";
-import { usePrice } from "@/lib/currency";
 
-// Deposit sentence with the amount in the selected currency
+// "Deposit depends on the car — ask us. Paid by card or cash, refunded …"
 export default function DepositNote({ className = "" }: { className?: string }) {
-  const t = useTranslations();
-  const { text, approx } = usePrice(site.deposit);
-  const amount = approx ? `${text} (${t("price.approx")})` : text;
+  const t = useTranslations("price");
+  const refund = t("refundTime", { days: site.depositRefundDays });
 
-  const refund = t("price.refundTime", { days: site.depositRefundDays });
-
-  return <p className={className}>{t("car.deposit", { amount, refund })}</p>;
+  return <p className={className}>{t("deposit", { refund })}</p>;
 }

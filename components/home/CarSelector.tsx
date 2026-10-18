@@ -171,7 +171,14 @@ export default function CarSelector() {
               transition={{ duration: 0.38, ease: [0.2, 0.7, 0.2, 1] }}
             >
               <p className="text-sm text-muted">{car.brand}</p>
-              <h3 className="text-5xl leading-[0.95] font-black italic lg:text-[clamp(2.25rem,min(3.6vw,7svh),4rem)]">
+              {/* Long model names ("X6 xDrive40i M Sport (G06)") step down a size */}
+              <h3
+                className={`leading-[0.95] font-black italic ${
+                  car.model.length > 16
+                    ? "text-4xl lg:text-[clamp(1.9rem,min(2.8vw,5.5svh),3.25rem)]"
+                    : "text-5xl lg:text-[clamp(2.25rem,min(3.6vw,7svh),4rem)]"
+                }`}
+              >
                 {car.model}
               </h3>
             </motion.div>

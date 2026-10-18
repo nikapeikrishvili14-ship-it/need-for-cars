@@ -23,7 +23,7 @@ export async function sendToOwner(
       body: JSON.stringify({
         access_key: ACCESS_KEY,
         subject,
-        from_name: "Need for Cars website",
+        from_name: "Need For Cars website",
         ...fields,
       }),
     });

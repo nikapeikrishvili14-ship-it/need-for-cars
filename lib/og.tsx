@@ -250,8 +250,9 @@ export async function carCard(locale: Locale, car: Car) {
   const t = await getTranslations({ locale, namespace: "car" });
   const tPrice = await getTranslations({ locale, namespace: "price" });
   const georgian = locale === "ka";
+  const hp = t("units.hp", { value: car.specs.hp });
   const stats = [
-    t("units.hp", { value: car.specs.hp }),
+    car.specs.tuned ? `${hp} · ${t("tuned")}` : hp,
     `0–100 ${t("units.seconds", { value: formatDecimal(car.specs.acceleration, locale) })}`,
     t("units.kmh", { value: car.specs.topSpeed }),
   ];
@@ -279,7 +280,10 @@ export async function carCard(locale: Locale, car: Car) {
         <div style={{ marginTop: 22, fontSize: 26, fontWeight: 600, color: c.muted, textTransform: "uppercase", letterSpacing: 4 }}>
           {car.brand}
         </div>
-        <div style={{ fontSize: 76, lineHeight: 1, fontWeight: 900, fontStyle: "italic", letterSpacing: -1 }}>{car.model}</div>
+        {/* Long names ("X6 xDrive40i M Sport (G06)") get a smaller size so they fit in two lines */}
+        <div style={{ fontSize: car.model.length > 10 ? 56 : 76, lineHeight: 1, fontWeight: 900, fontStyle: "italic", letterSpacing: -1 }}>
+          {car.model}
+        </div>
         <AccentBar />
         <div style={{ display: "flex", alignItems: "baseline", marginTop: 24 }}>
           <span style={{ fontSize: 46, fontWeight: 900, fontStyle: "italic", color: c.fg }}>

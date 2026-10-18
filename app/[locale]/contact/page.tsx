@@ -76,7 +76,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
       </div>
 
       <div className="mx-auto mt-12 max-w-7xl px-4 lg:px-8">
-        {/* TODO(owner): set the real map link in data/site.ts → contacts.mapEmbedUrl */}
+        {/* Tbilisi city map (no exact address) — data/site.ts → contacts.mapEmbedUrl */}
         <iframe
           src={contacts.mapEmbedUrl}
           title={t("contact.mapTitle")}

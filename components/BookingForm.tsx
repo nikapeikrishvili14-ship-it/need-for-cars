@@ -7,11 +7,12 @@ import { cars, getCar } from "@/data/cars";
 import { site } from "@/data/site";
 import type { Locale } from "@/i18n/routing";
 import { formatMoney, useMoney } from "@/lib/currency";
+import { deliveryFee, getCity } from "@/lib/delivery";
 import { daysBetween, isEmail, isPhone, useForm, useToday, type Errors } from "@/lib/form";
 import { sendToOwner, type SendResult } from "@/lib/web3forms";
 import { toLines } from "@/lib/whatsapp";
 import BookingEstimate, { type EstimateLine } from "./BookingEstimate";
-import Price from "./Price";
+import AskUs from "./AskUs";
 import {
   Field,
   FormAlert,
@@ -38,7 +39,6 @@ type Values = {
   pickupAddress: string;
   dropoffLocation: string;
   dropoffAddress: string;
-  extras: string[];
   driverAge: string;
   experience: string;
   flightNumber: string;
@@ -79,6 +79,8 @@ function validate(v: Values, today: string): Errors<Values> {
 export default function BookingForm() {
   const t = useTranslations("booking");
   const tf = useTranslations("form");
+  const td = useTranslations("delivery");
+  const tCar = useTranslations("car");
   const locale = useLocale() as Locale;
   const tp = useTranslations("price");
   const money = useMoney();
@@ -102,7 +104,6 @@ export default function BookingForm() {
     pickupAddress: "",
     dropoffLocation: "",
     dropoffAddress: "",
-    extras: [],
     driverAge: "",
     experience: "",
     flightNumber: "",
@@ -119,39 +120,55 @@ export default function BookingForm() {
   const days = daysBetween(v.pickupDate, v.returnDate);
 
   // ----- Locations -----
-  const locationFee = (id: string) =>
-    id === CUSTOM ? site.customAddressFee : (site.cities.find((c) => c.id === id)?.deliveryFee ?? 0);
   const locationName = (id: string, address: string, lang: Locale = locale) =>
-    id === CUSTOM
-      ? address.trim() || t("fields.custom")
-      : (site.cities.find((c) => c.id === id)?.name[lang] ?? "");
-  const locationOption = (usd: number) => (usd === 0 ? t("free") : `+${optionPrice(usd)}`);
+    id === CUSTOM ? address.trim() || t("fields.custom") : (getCity(id)?.name[lang] ?? "");
+  // Option labels show the full rule: "Tbilisi Airport — +$50 · free from 3 days"
+  const locationOption = (id: string) => {
+    const city = getCity(id);
+    if (!city) return td("askUs");
+    if (city.deliveryFee === 0) return td("free");
+    const fee = `+${optionPrice(city.deliveryFee)}`;
+    return city.freeFromDays ? `${fee} · ${td("freeFrom", { days: city.freeFromDays })}` : fee;
+  };
 
   // ----- Estimate (all in USD; <Price> converts for display) -----
+  // A place's fee covers delivering the car there and collecting it there, so
+  // returning it where it was picked up adds nothing. Hotel/home addresses and
+  // returns in another region have no fixed price: those lines say "ask us"
+  // and stay out of the total.
+  // TODO(owner): confirm the delivery fee also covers collecting the car at the same place
   const lines: EstimateLine[] = [];
   if (car && days > 0) {
     lines.push({ label: t("estimate.rental", { car: carName, days: t("days", { count: days }) }), usd: car.pricePerDay * days });
-    const pickupFee = v.pickupLocation ? locationFee(v.pickupLocation) : 0;
-    const dropoffFee = v.dropoffLocation ? locationFee(v.dropoffLocation) : 0;
-    if (pickupFee > 0)
-      lines.push({ label: t("estimate.pickupFee", { place: locationName(v.pickupLocation, v.pickupAddress) }), usd: pickupFee });
-    if (dropoffFee > 0)
-      lines.push({ label: t("estimate.dropoffFee", { place: locationName(v.dropoffLocation, v.dropoffAddress) }), usd: dropoffFee });
-    for (const extra of site.extras.filter((x) => v.extras.includes(x.id))) {
-      lines.push({ label: extra.name[locale], usd: extra.per === "day" ? extra.price * days : extra.price });
+
+    const placeLine = (id: string, address: string, key: "pickupFee" | "dropoffFee"): EstimateLine | undefined => {
+      const label = t(`estimate.${key}`, { place: locationName(id, address) });
+      if (id === CUSTOM) return { label };
+      const city = getCity(id);
+      if (!city || city.deliveryFee === 0) return undefined;
+      const fee = deliveryFee(city, days);
+      return fee > 0 ? { label, usd: fee } : { label, usd: 0, free: true };
+    };
+
+    const pickup = v.pickupLocation ? placeLine(v.pickupLocation, v.pickupAddress, "pickupFee") : undefined;
+    if (pickup) lines.push(pickup);
+
+    // Two hotel/home addresses may differ, so a custom drop-off always gets its own line
+    if (v.dropoffLocation && (v.dropoffLocation !== v.pickupLocation || v.dropoffLocation === CUSTOM)) {
+      const from = getCity(v.pickupLocation);
+      const to = getCity(v.dropoffLocation);
+      if (from && to && from.region !== to.region) {
+        lines.push({ label: t("estimate.otherCity", { place: to.name[locale] }) });
+      } else {
+        const dropoff = placeLine(v.dropoffLocation, v.dropoffAddress, "dropoffFee");
+        if (dropoff) lines.push(dropoff);
+      }
     }
   }
-  const totalUsd = lines.reduce((sum, line) => sum + line.usd, 0);
-
-  // ----- Driver requirement warnings (informational, don't block sending) -----
-  const age = Number(v.driverAge);
-  const exp = Number(v.experience);
-  const ageWarning = car && v.driverAge && !form.errors.driverAge && age < car.minAge;
-  const expWarning = car && v.experience !== "" && !form.errors.experience && exp < car.minExperience;
+  const totalUsd = lines.reduce((sum, line) => sum + (line.usd ?? 0), 0);
+  const askLines = lines.filter((line) => line.usd === undefined).map((line) => line.label);
 
   // ----- WhatsApp message in the visitor's language -----
-  const extrasText =
-    site.extras.filter((x) => v.extras.includes(x.id)).map((x) => x.name[locale]).join(", ") || t("extrasNone");
   const whatsappText = [
     t("whatsappIntro"),
     "",
@@ -161,7 +178,6 @@ export default function BookingForm() {
       [t("fields.returnDate"), v.returnDate && days ? `${v.returnDate} (${t("days", { count: days })})` : v.returnDate],
       [t("fields.pickupLocation"), v.pickupLocation && locationName(v.pickupLocation, v.pickupAddress)],
       [t("fields.dropoffLocation"), v.dropoffLocation && locationName(v.dropoffLocation, v.dropoffAddress)],
-      [t("sections.extras"), extrasText],
       [t("fields.driverAge"), v.driverAge],
       [t("fields.experience"), v.experience],
       [t("fields.flightNumber"), v.flightNumber],
@@ -196,13 +212,12 @@ export default function BookingForm() {
         days: String(days),
         "pickup location": locationName(v.pickupLocation, v.pickupAddress, "en"),
         "drop-off location": locationName(v.dropoffLocation, v.dropoffAddress, "en"),
-        extras: site.extras.filter((x) => v.extras.includes(x.id)).map((x) => x.name.en).join(", ") || "none",
         "driver age": v.driverAge,
         "driving experience (years)": v.experience,
         "flight number": v.flightNumber || "—",
         message: v.message || "—",
-        "estimated total (USD)": formatMoney(totalUsd, "USD", "en"),
-        "deposit (USD, refundable)": formatMoney(site.deposit, "USD", "en"),
+        "estimated total (USD, normal daily price)": formatMoney(totalUsd, "USD", "en"),
+        "price on request (not in the total)": askLines.join("; ") || "—",
         "site language": locale,
       },
       v.honeypot,
@@ -235,11 +250,11 @@ export default function BookingForm() {
           <option value="">{tf("select")}</option>
           {site.cities.map((city) => (
             <option key={city.id} value={city.id}>
-              {city.name[locale]} — {locationOption(city.deliveryFee)}
+              {city.name[locale]} — {locationOption(city.id)}
             </option>
           ))}
           <option value={CUSTOM}>
-            {t("fields.custom")} — {locationOption(site.customAddressFee)}
+            {t("fields.custom")} — {locationOption(CUSTOM)}
           </option>
         </select>
       </Field>
@@ -335,33 +350,6 @@ export default function BookingForm() {
           })}
         </FormSection>
 
-        <FormSection title={t("sections.extras")}>
-          {site.extras.map((extra) => {
-            const checked = v.extras.includes(extra.id);
-            return (
-              <label
-                key={extra.id}
-                className={`flex cursor-pointer items-center gap-3 border px-4 py-3 transition-colors ${
-                  checked ? "border-accent bg-accent/5" : "border-line hover:border-accent/60"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  name="extras"
-                  value={extra.id}
-                  checked={checked}
-                  onChange={(e) =>
-                    set("extras", e.target.checked ? [...v.extras, extra.id] : v.extras.filter((id) => id !== extra.id))
-                  }
-                  className="h-4 w-4 shrink-0 accent-accent"
-                />
-                <span className="flex-1">{extra.name[locale]}</span>
-                <Price usd={extra.price} per={extra.per} className="text-sm text-muted" />
-              </label>
-            );
-          })}
-        </FormSection>
-
         <FormSection title={t("sections.driver")}>
           <Field id="driverAge" label={t("fields.driverAge")} error={errorFor("driverAge")}>
             <input
@@ -389,12 +377,12 @@ export default function BookingForm() {
               className={inputClass}
             />
           </Field>
-          {(ageWarning || expWarning) && car && (
-            <div role="alert" className="space-y-2 border border-amber-400/50 bg-amber-400/10 px-4 py-3 text-sm text-amber-200 sm:col-span-2">
-              {ageWarning && <p>⚠ {t("warnings.age", { car: carName, min: car.minAge })}</p>}
-              {expWarning && <p>⚠ {t("warnings.experience", { car: carName, min: car.minExperience })}</p>}
-            </div>
-          )}
+          {/* Age and experience are info for the owner; the rules depend on the car */}
+          <div className="text-sm sm:col-span-2">
+            <AskUs topic={carName ? `${tCar("requirements")} — ${carName}` : tCar("requirements")}>
+              <span className="text-muted">{tCar("requirementsText")}</span>
+            </AskUs>
+          </div>
         </FormSection>
 
         <FormSection title={t("sections.contact")}>

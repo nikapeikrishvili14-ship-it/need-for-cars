@@ -4,7 +4,7 @@
 
 ## Business
 
-Car rental company in Georgia. Fleet: 7–8 sports cars and luxury SUVs only.
+Car rental company in Georgia (Tbilisi). Fleet: 10 cars — sports cars, grand tourers, luxury SUVs and a luxury sedan.
 Customers: tourists and locals.
 
 ## Goal
@@ -58,14 +58,18 @@ and forms that send inquiries to the owner. No online payment.
 
 - Base currency USD. Currency switch USD / GEL / EUR using FIXED rates in data/site.ts
   (converted prices marked "approx.")
-- Estimate = days × price/day + extras (delivery by city, custom drop-off, etc.)
-- Deposit $100, refundable 1 working day after return — shown separately, not added to total
+- Estimate = days × price/day + delivery by place (free-delivery rules by rental length);
+  hotel/home address and returns in another city are "ask us" (not in the total).
+  Long-rental discounts depend on the car — shown as a note, estimate uses the normal price
+- Deposit depends on the car ("ask us", no amounts), card or cash, refunded
+  site.depositRefundDays after return — shown separately, not added to total
 - All cars insured
 
 ## Forms
 
 - Booking: name, phone/WhatsApp, email, car, pickup date, return date, pickup location,
-  drop-off location, extras, driver age, driving experience (years), flight number (optional), message
+  drop-off location, driver age, driving experience (years), flight number (optional), message
+  (age/experience are info for the owner — requirements depend on the car, "ask us")
 - Submit → email to owner via Web3Forms + "Send via WhatsApp" button
   (wa.me link with all details pre-typed)
 - Spam protection: honeypot field
@@ -73,8 +77,8 @@ and forms that send inquiries to the owner. No online payment.
 
 ## Data
 
-- data/cars.ts — all cars (EN/KA/RU text, specs, price, min age, min experience, photos)
-- data/site.ts — contacts, cities, extras + prices, currency rates, terms, FAQ
+- data/cars.ts — all cars (EN/KA/RU text, specs, price, colour, optional year, photos)
+- data/site.ts — contacts, delivery places + fees, currency rates, story, terms, FAQ
 - Photos: public/cars/[slug]/1.webp, 2.webp ...
 - Unknown info → placeholder marked with a comment: // TODO(owner): ...
 

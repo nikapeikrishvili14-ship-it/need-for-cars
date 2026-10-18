@@ -50,11 +50,11 @@ export function languageAlternates(path: string): Record<string, string> {
 
 type PageMeta = {
   locale: Locale;
-  /** Path without locale, e.g. "/" or "/cars/porsche-911-carrera" */
+  /** Path without locale, e.g. "/" or "/cars/toyota-gr-supra" */
   path: string;
   title: string;
   description: string;
-  /** Use the title as-is instead of adding " | Need for Cars" (home page) */
+  /** Use the title as-is instead of adding " | Need For Cars" (home page) */
   absoluteTitle?: boolean;
   /** Sharing image; defaults to the language's garage card (/[locale]/og.png) */
   image?: { url: string; width?: number; height?: number; alt: string };

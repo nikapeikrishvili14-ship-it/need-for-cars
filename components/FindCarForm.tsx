@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import type { CarType } from "@/data/cars";
 import { useCurrency } from "@/lib/currency";
+import { fleet } from "@/lib/fleet";
 import { isEmail, isPhone, useForm, useToday, type Errors } from "@/lib/form";
 import { sendToOwner, type SendResult } from "@/lib/web3forms";
 import {
@@ -22,7 +24,7 @@ type Values = {
   email: string;
   dateFrom: string;
   dateTo: string;
-  carType: "any" | "sports" | "suv";
+  carType: "any" | CarType;
   budget: string;
   message: string;
   honeypot: string;
@@ -138,8 +140,11 @@ export default function FindCarForm() {
             className={inputClass}
           >
             <option value="any">{t("anyType")}</option>
-            <option value="sports">{tc("sports")}</option>
-            <option value="suv">{tc("suv")}</option>
+            {fleet.types.map((type) => (
+              <option key={type} value={type}>
+                {tc(type)}
+              </option>
+            ))}
           </select>
         </Field>
 

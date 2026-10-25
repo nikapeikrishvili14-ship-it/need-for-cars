@@ -416,10 +416,10 @@ export const site: SiteConfig = {
   hero: {
     video: undefined, // TODO(owner): e.g. "/hero/garage.mp4" — short muted loop
     // Remove `image` to switch back to the built-in garage scene
-    image: "/hero/hero-supra.jpg",
+    image: "/hero/hero-c8.jpg",
     imageSize: { width: 2750, height: 1536 },
-    carStart: 0.31,
-    car: "toyota-gr-supra",
+    carStart: 0.44,
+    car: "chevrolet-corvette-c8-stingray",
   },
   // TODO(owner): add real customer reviews. The home page shows a
   // "reviews coming soon" note while this list is empty. Example:

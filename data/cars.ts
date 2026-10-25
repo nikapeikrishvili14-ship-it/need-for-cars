@@ -48,18 +48,17 @@ export type Car = {
   /**
    * Transparent side-view cut-out of the car, facing right and tightly
    * cropped (tyres on the bottom edge), for the garage scenes: home hero, car
-   * selector, catalogue cards. Without it the first photo is shown instead.
+   * selector, About page. Without it the first photo is shown instead.
    */
   stage?: string;
   /**
-   * Short engine clip (1–2 s), played on switch when the visitor turns sound on.
-   * Leave undefined until the file exists in public/ — a synthesized rev plays instead.
+   * Short engine clip (~3 s, /sounds/[slug].mp3), played on switch when the visitor
+   * turns sound on. If it is unset or fails to load, a synthesized rev plays instead.
    */
   sound?: string;
   featured: boolean;
 };
 
-// TODO(owner): engine clips, e.g. "/sounds/[slug].mp3" — the synth sound plays until `sound` is set
 
 export const cars: Car[] = [
   {
@@ -86,7 +85,10 @@ export const cars: Car[] = [
       { src: "/cars/chevrolet-corvette-c8-stingray/5.webp", angle: "rear" },
     ],
     stage: "/cars/chevrolet-corvette-c8-stingray/stage.webp",
-    featured: false,
+    sound: "/sounds/chevrolet-corvette-c8-stingray.mp3",
+    // Also the car in the home hero photo (data/site.ts → hero.car).
+    // Featured = shown on the site's share image and the About page.
+    featured: true,
   },
   {
     slug: "toyota-gr-supra",
@@ -113,8 +115,8 @@ export const cars: Car[] = [
       { src: "/cars/toyota-gr-supra/6.webp", angle: "top34" },
     ],
     stage: "/cars/toyota-gr-supra/stage.webp",
-    // The car in the home hero photo
-    featured: true,
+    sound: "/sounds/toyota-gr-supra.mp3",
+    featured: false,
   },
   {
     slug: "bmw-x5-xdrive40i",
@@ -141,6 +143,7 @@ export const cars: Car[] = [
       { src: "/cars/bmw-x5-xdrive40i/6.webp", angle: "top34" },
     ],
     stage: "/cars/bmw-x5-xdrive40i/stage.webp",
+    sound: "/sounds/bmw-x5-xdrive40i.mp3",
     featured: false,
   },
   {
@@ -168,6 +171,7 @@ export const cars: Car[] = [
       { src: "/cars/bmw-m850i-gran-coupe/6.webp", angle: "top34" },
     ],
     stage: "/cars/bmw-m850i-gran-coupe/stage.webp",
+    sound: "/sounds/bmw-m850i-gran-coupe.mp3",
     featured: false,
   },
   {
@@ -195,6 +199,7 @@ export const cars: Car[] = [
       { src: "/cars/bmw-x6-xdrive40i-m-sport/6.webp", angle: "top34" },
     ],
     stage: "/cars/bmw-x6-xdrive40i-m-sport/stage.webp",
+    sound: "/sounds/bmw-x6-xdrive40i-m-sport.mp3",
     featured: false,
   },
   {
@@ -223,6 +228,7 @@ export const cars: Car[] = [
       { src: "/cars/mercedes-amg-gle-63-s-coupe/6.webp", angle: "top34" },
     ],
     stage: "/cars/mercedes-amg-gle-63-s-coupe/stage.webp",
+    sound: "/sounds/mercedes-amg-gle-63-s-coupe.mp3",
     featured: false,
   },
   {
@@ -250,6 +256,7 @@ export const cars: Car[] = [
       { src: "/cars/chevrolet-corvette-c7-stingray/6.webp", angle: "top34" },
     ],
     stage: "/cars/chevrolet-corvette-c7-stingray/stage.webp",
+    sound: "/sounds/chevrolet-corvette-c7-stingray.mp3",
     featured: false,
   },
   {
@@ -277,6 +284,7 @@ export const cars: Car[] = [
       { src: "/cars/mercedes-amg-gt-43-4-door-coupe/6.webp", angle: "top34" },
     ],
     stage: "/cars/mercedes-amg-gt-43-4-door-coupe/stage.webp",
+    sound: "/sounds/mercedes-amg-gt-43-4-door-coupe.mp3",
     featured: false,
   },
   {
@@ -304,6 +312,7 @@ export const cars: Car[] = [
       { src: "/cars/mercedes-benz-s-350-d/6.webp", angle: "top34" },
     ],
     stage: "/cars/mercedes-benz-s-350-d/stage.webp",
+    sound: "/sounds/mercedes-benz-s-350-d.mp3",
     featured: false,
   },
   {
@@ -331,6 +340,7 @@ export const cars: Car[] = [
       { src: "/cars/mercedes-benz-cls-450-4matic/6.webp", angle: "top34" },
     ],
     stage: "/cars/mercedes-benz-cls-450-4matic/stage.webp",
+    sound: "/sounds/mercedes-benz-cls-450-4matic.mp3",
     featured: false,
   },
 ];

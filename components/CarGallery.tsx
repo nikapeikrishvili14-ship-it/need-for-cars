@@ -7,7 +7,6 @@ import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { carouselKeyHandler } from "@/lib/carouselKeys";
 import type { CarPhoto } from "@/data/cars";
-import StudioBackdrop from "./garage/StudioBackdrop";
 
 type Props = {
   photos: CarPhoto[];
@@ -15,8 +14,8 @@ type Props = {
   alt: string;
 };
 
-// Car page gallery: swipeable photos (embla) shown in a garage bay — lamp
-// overhead, each photo mirrored on the glossy floor below it.
+// Car page gallery: swipeable photos (embla). Each photo fills its 16:9 frame
+// edge to edge; arrows and the counter sit on top of it.
 export default function CarGallery({ photos, alt }: Props) {
   const t = useTranslations("car");
   const total = photos.length;
@@ -41,11 +40,9 @@ export default function CarGallery({ photos, alt }: Props) {
         aria-label={alt}
         // Focusable so keyboard users can reach the arrow-key control
         tabIndex={total > 1 ? 0 : undefined}
-        className="relative isolate overflow-hidden border border-line bg-night px-3 pt-8 focus-visible:-outline-offset-4 sm:px-8 sm:pt-12"
+        className="relative isolate overflow-hidden border border-line bg-night focus-visible:-outline-offset-4"
       >
-        <StudioBackdrop horizon={80} />
-
-        <div ref={emblaRef} className="relative overflow-hidden">
+        <div ref={emblaRef} className="overflow-hidden">
           <div className="flex touch-pan-y">
             {photos.map(({ src, angle }, i) => (
               <div
@@ -56,7 +53,7 @@ export default function CarGallery({ photos, alt }: Props) {
                 aria-hidden={i !== index}
                 className="min-w-0 flex-[0_0_100%]"
               >
-                <div className="edge-angled relative aspect-video overflow-hidden">
+                <div className="relative aspect-video">
                   <Image
                     src={src}
                     alt={
@@ -71,12 +68,6 @@ export default function CarGallery({ photos, alt }: Props) {
                     className="object-cover"
                   />
                 </div>
-                {/* Reflection on the floor */}
-                <div aria-hidden="true" className="relative h-10 overflow-hidden sm:h-16">
-                  <div className="car-reflection edge-angled absolute inset-x-0 top-0 aspect-video">
-                    <Image src={src} alt="" fill sizes="(min-width: 1024px) 60vw, 100vw" className="object-cover" />
-                  </div>
-                </div>
               </div>
             ))}
           </div>
@@ -87,7 +78,7 @@ export default function CarGallery({ photos, alt }: Props) {
             <GalleryArrow label={t("prevPhoto")} onClick={() => embla?.scrollPrev()} side="left" />
             <GalleryArrow label={t("nextPhoto")} onClick={() => embla?.scrollNext()} side="right" />
             <p
-              className="absolute right-4 bottom-3 text-xs text-muted sm:right-8"
+              className="absolute right-3 bottom-3 bg-night/70 px-2 py-0.5 text-xs text-fg/85 sm:right-4 sm:bottom-4"
               aria-live="polite"
             >
               {index + 1} / {total}
@@ -129,7 +120,7 @@ function GalleryArrow({ label, onClick, side }: { label: string; onClick: () => 
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`slant absolute top-[45%] -translate-y-1/2 ${
+      className={`slant absolute top-1/2 -translate-y-1/2 ${
         side === "left" ? "left-4 sm:left-5" : "right-4 sm:right-5"
       } flex h-11 w-11 items-center justify-center border border-fg/15 bg-night/70 text-fg transition-[background-color,color,box-shadow] duration-200 hover:bg-accent hover:text-night hover:shadow-glow`}
     >

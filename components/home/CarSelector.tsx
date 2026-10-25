@@ -7,7 +7,7 @@ import { motion, useInView } from "motion/react";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import { cars } from "@/data/cars";
-import { playEngine } from "@/lib/engineSound";
+import { playEngine, stopEngine } from "@/lib/engineSound";
 import { carouselKeyHandler } from "@/lib/carouselKeys";
 import StudioBackdrop from "@/components/garage/StudioBackdrop";
 import CarModel from "@/components/garage/CarModel";
@@ -62,7 +62,11 @@ export default function CarSelector() {
     soundRef.current = next;
     setSound(next);
     if (next) playEngine(cars[embla?.selectedScrollSnap() ?? 0].sound);
+    else stopEngine();
   }, [embla]);
+
+  // Leaving the page cuts the sound too
+  useEffect(() => stopEngine, []);
 
   const car = cars[index];
   const name = (c: (typeof cars)[number]) => `${c.brand} ${c.model}`;

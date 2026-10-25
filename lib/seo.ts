@@ -97,19 +97,20 @@ export function pageMetadata({ locale, path, title, description, absoluteTitle, 
 }
 
 /**
- * Image types the share-card renderer (lib/og.tsx) can draw. It can't draw
- * WebP/AVIF, so a car with only WebP photos shares the cover photo file itself.
+ * Image types the share-card renderer (lib/og.tsx) can draw (WebP is
+ * converted there first). A car with only other types (e.g. AVIF) shares the
+ * cover photo file itself.
  */
 export function canDraw(path: string | undefined): path is string {
-  return !!path && /\.(png|jpe?g|svg)$/i.test(path);
+  return !!path && /\.(png|jpe?g|svg|webp)$/i.test(path);
 }
 
 /** Sharing image for a car page: its drawn garage card, or the cover photo as-is */
 export function carShareImage(locale: Locale, car: Car, alt: string): NonNullable<PageMeta["image"]> {
-  if (canDraw(car.stage) || canDraw(car.photos[0])) {
+  if (canDraw(car.stage) || canDraw(car.photos[0].src)) {
     return { url: absoluteUrl(`/${locale}/cars/${car.slug}/og.png`), width: 1200, height: 630, alt };
   }
-  return { url: absoluteUrl(car.photos[0]), alt };
+  return { url: absoluteUrl(car.photos[0].src), alt };
 }
 
 /** Metadata for one of the fixed pages, text from meta.pages.* */

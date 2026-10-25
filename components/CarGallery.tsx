@@ -6,10 +6,12 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { carouselKeyHandler } from "@/lib/carouselKeys";
+import type { CarPhoto } from "@/data/cars";
 import StudioBackdrop from "./garage/StudioBackdrop";
 
 type Props = {
-  photos: string[];
+  photos: CarPhoto[];
+  /** Car name; each photo's alt text adds its camera angle */
   alt: string;
 };
 
@@ -45,7 +47,7 @@ export default function CarGallery({ photos, alt }: Props) {
 
         <div ref={emblaRef} className="relative overflow-hidden">
           <div className="flex touch-pan-y">
-            {photos.map((src, i) => (
+            {photos.map(({ src, angle }, i) => (
               <div
                 key={src}
                 role="group"
@@ -57,7 +59,11 @@ export default function CarGallery({ photos, alt }: Props) {
                 <div className="edge-angled relative aspect-video overflow-hidden">
                   <Image
                     src={src}
-                    alt={`${alt} — ${t("photo", { n: i + 1, total })}`}
+                    alt={
+                      angle
+                        ? t("photoAlt", { car: alt, angle: t(`angles.${angle}`) })
+                        : `${alt} — ${t("photo", { n: i + 1, total })}`
+                    }
                     fill
                     preload={i === 0}
                     sizes="(min-width: 1024px) 60vw, 100vw"
@@ -91,9 +97,10 @@ export default function CarGallery({ photos, alt }: Props) {
       </div>
 
       {total > 1 && (
-        <ul className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-5">
-          {photos.map((src, i) => (
-            <li key={src}>
+        // Phones: rows of three; wider screens: one row, however many photos
+        <ul className="mt-3 grid grid-cols-3 gap-2 sm:flex">
+          {photos.map(({ src }, i) => (
+            <li key={src} className="sm:min-w-0 sm:flex-1">
               <button
                 type="button"
                 onClick={() => embla?.scrollTo(i)}
@@ -105,7 +112,7 @@ export default function CarGallery({ photos, alt }: Props) {
                     : "border-line opacity-60 hover:border-accent/60 hover:opacity-100"
                 }`}
               >
-                <Image src={src} alt="" fill sizes="20vw" className="object-cover" />
+                <Image src={src} alt="" fill sizes="(min-width: 640px) 17vw, 33vw" className="object-cover" />
               </button>
             </li>
           ))}

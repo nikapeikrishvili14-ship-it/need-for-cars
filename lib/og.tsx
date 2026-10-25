@@ -37,6 +37,30 @@ async function dataUri(publicPath: string): Promise<string> {
   return `data:${mime[ext]};base64,${file.toString("base64")}`;
 }
 
+type Picture = { src: string; width: number; height: number };
+
+/**
+ * A car photo or cut-out as a data URI the renderer can draw. The renderer
+ * can't decode WebP, so the file is converted in memory (PNG when it has
+ * transparency, else JPEG) with sharp, which is installed with Next.js. The
+ * files in public/ are never changed. If sharp can't be loaded the card is
+ * drawn without the car instead of failing the build.
+ */
+async function carPicture(publicPath: string): Promise<Picture | undefined> {
+  try {
+    const { default: sharp } = await import("sharp");
+    const image = sharp(join(process.cwd(), "public", publicPath)).resize({ width: 1320, withoutEnlargement: true });
+    const { hasAlpha } = await image.metadata();
+    const { data, info } = await (hasAlpha ? image.png() : image.jpeg({ quality: 85 })).toBuffer({
+      resolveWithObject: true,
+    });
+    return { src: `data:image/${info.format};base64,${data.toString("base64")}`, width: info.width, height: info.height };
+  } catch (error) {
+    console.warn(`Share image: can't read ${publicPath}, drawing the card without the car.`, error);
+    return undefined;
+  }
+}
+
 type Font = { name: string; data: Buffer; weight: 600 | 900; style: "normal" | "italic" };
 let fonts: Promise<Font[]> | undefined;
 
@@ -134,10 +158,15 @@ function Garage({ logo, children, car }: { logo: string; children: React.ReactNo
   );
 }
 
-/** The car's cut-out standing on the floor, with a faded reflection */
-function StagedCar({ src }: { src: string }) {
+/**
+ * The car's cut-out standing on the floor, with a faded reflection. As on the
+ * site (components/garage/CarModel.tsx) every car is drawn the same width and
+ * its height follows the cut-out, so SUVs come out taller, not shorter.
+ */
+function StagedCar({ picture: { src, width, height } }: { picture: Picture }) {
   const w = 660;
-  const h = (w * 7) / 20; // stage images are 20:7 (components/garage/CarModel.tsx)
+  const h = Math.round((w * height) / width);
+  // Tyres a touch below the floor line, so the car stands on it
   const top = HORIZON - h + 10;
   const left = STAGE_X - w / 2;
   return (
@@ -213,8 +242,10 @@ function AccentBar() {
 /** Car image for the card: the cut-out if it can be drawn, else the cover photo */
 async function carVisual(car: Car | undefined) {
   if (!car) return undefined;
-  if (canDraw(car.stage)) return <StagedCar src={await dataUri(car.stage)} />;
-  if (canDraw(car.photos[0])) return <PhotoPanel src={await dataUri(car.photos[0])} />;
+  const stage = canDraw(car.stage) ? await carPicture(car.stage) : undefined;
+  if (stage) return <StagedCar picture={stage} />;
+  const cover = canDraw(car.photos[0].src) ? await carPicture(car.photos[0].src) : undefined;
+  if (cover) return <PhotoPanel src={cover.src} />;
   return undefined;
 }
 

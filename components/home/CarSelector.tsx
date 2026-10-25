@@ -102,7 +102,8 @@ export default function CarSelector() {
         aria-describedby="garage-intro"
         // Focusable so keyboard users can reach the arrow-key control
         tabIndex={0}
-        className="relative mx-[calc(50%-50vw)] mt-4 focus-visible:-outline-offset-4"
+        // flow-root: keeps the car viewport's negative margin inside this box
+        className="relative mx-[calc(50%-50vw)] mt-4 flow-root focus-visible:-outline-offset-4"
       >
         <StudioBackdrop floor={false} className="-top-20" />
         <div
@@ -110,7 +111,9 @@ export default function CarSelector() {
           className="studio-floor absolute inset-x-0 top-[calc(var(--car-w)*0.34)] bottom-0"
         />
 
-        <div ref={emblaRef} className="relative overflow-hidden">
+        {/* Pulled up and padded back down by the same amount: room for SUV roofs,
+            which rise above the car box (see CarModel), without moving the car */}
+        <div ref={emblaRef} className="relative mt-[calc(-0.03*var(--car-w))] overflow-hidden">
           <div className="flex touch-pan-y">
             {cars.map((c, i) => {
               const active = i === index;
@@ -126,7 +129,7 @@ export default function CarSelector() {
                   onClick={() => !active && embla?.scrollTo(i)}
                 >
                   {/* Bottom padding keeps the reflection inside the clipped viewport */}
-                  <div className="pb-[calc(var(--car-w)*0.13)]">
+                  <div className="pt-[calc(var(--car-w)*0.03)] pb-[calc(var(--car-w)*0.13)]">
                     <div
                       className={`origin-bottom transition-[transform,opacity,filter] duration-500 ease-sweep ${
                         active ? "scale-100 opacity-100" : "scale-[0.6] cursor-pointer opacity-30 brightness-50"
@@ -216,11 +219,11 @@ export default function CarSelector() {
               >
                 <span className="relative block h-7 w-20 shrink-0">
                   <Image
-                    src={c.stage ?? c.photos[0]}
+                    src={c.stage ?? c.photos[0].src}
                     alt=""
                     fill
                     sizes="80px"
-                    className={c.stage ? "object-contain" : "object-cover"}
+                    className={c.stage ? "object-contain object-bottom" : "object-cover"}
                   />
                 </span>
                 <span className={`text-sm font-semibold whitespace-nowrap ${active ? "text-fg" : "text-muted"}`}>

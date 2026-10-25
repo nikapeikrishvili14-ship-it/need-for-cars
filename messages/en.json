@@ -255,6 +255,15 @@
     "back": "All cars",
     "details": "View details",
     "photo": "Photo {n} of {total}",
+    "photoAlt": "{car} – {angle}",
+    "angles": {
+      "front34": "front three-quarter view",
+      "side": "side view",
+      "rear34": "rear three-quarter view",
+      "front": "front view",
+      "rear": "rear view",
+      "top34": "three-quarter view from above"
+    },
     "showPhoto": "Show photo {n}",
     "prevPhoto": "Previous photo",
     "nextPhoto": "Next photo",

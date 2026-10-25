@@ -5,6 +5,15 @@ export type Transmission = "automatic" | "manual";
 /** Names are translated in messages/*.json → car.colours */
 export type CarColour = "blue" | "red" | "black" | "white" | "matteBlack";
 
+/** Camera angle of a gallery photo, used for its alt text (messages → car.angles) */
+export type PhotoAngle = "front34" | "side" | "rear34" | "front" | "rear" | "top34";
+
+export type CarPhoto = {
+  /** Path under /public */
+  src: string;
+  angle?: PhotoAngle;
+};
+
 export type Car = {
   slug: string;
   brand: string;
@@ -34,12 +43,12 @@ export type Car = {
   };
   /** Short tagline shown under the name */
   description: Localized;
-  /** Paths under /public, first one is the cover */
-  photos: string[];
+  /** Gallery photos (16:9), first one is the cover */
+  photos: CarPhoto[];
   /**
-   * Transparent cut-out of the car (side or 3/4 view, PNG/WebP/SVG) for the
-   * garage scenes: home hero, car selector, catalogue cards. Without it the
-   * first photo is shown instead.
+   * Transparent side-view cut-out of the car, facing right and tightly
+   * cropped (tyres on the bottom edge), for the garage scenes: home hero, car
+   * selector, catalogue cards. Without it the first photo is shown instead.
    */
   stage?: string;
   /**
@@ -49,14 +58,6 @@ export type Car = {
   sound?: string;
   featured: boolean;
 };
-
-// Placeholder images until the real photos arrive.
-// TODO(owner): real photos in public/cars/[slug]/1.webp, 2.webp ... and a
-// transparent cut-out (stage.webp) for each car; then update the paths below.
-const placeholder = (slug: string) => ({
-  photos: [`/cars/${slug}/1.svg`, `/cars/${slug}/2.svg`],
-  stage: `/cars/${slug}/stage.svg`,
-});
 
 // TODO(owner): engine clips, e.g. "/sounds/[slug].mp3" — the synth sound plays until `sound` is set
 
@@ -77,7 +78,14 @@ export const cars: Car[] = [
       ka: "ამერიკული სუპერქარი შუა ძრავით. დაბალი, ხმამაღალი და შეუმჩნეველი ვერასდროს დარჩება.",
       ru: "Американский суперкар со средним расположением двигателя. Низкий, громкий — его невозможно не заметить.",
     },
-    ...placeholder("chevrolet-corvette-c8-stingray"),
+    photos: [
+      { src: "/cars/chevrolet-corvette-c8-stingray/1.webp", angle: "front34" },
+      { src: "/cars/chevrolet-corvette-c8-stingray/2.webp", angle: "side" },
+      { src: "/cars/chevrolet-corvette-c8-stingray/3.webp", angle: "rear34" },
+      { src: "/cars/chevrolet-corvette-c8-stingray/4.webp", angle: "front" },
+      { src: "/cars/chevrolet-corvette-c8-stingray/5.webp", angle: "rear" },
+    ],
+    stage: "/cars/chevrolet-corvette-c8-stingray/stage.webp",
     featured: false,
   },
   {
@@ -96,7 +104,15 @@ export const cars: Car[] = [
       ka: "ტიუნინგით 600 ც.ძ.-მდე. ლეგენდა, რომელსაც საზღვრები არ აქვს.",
       ru: "Тюнинг до 600 л.с. Легенда без ограничений.",
     },
-    ...placeholder("toyota-gr-supra"),
+    photos: [
+      { src: "/cars/toyota-gr-supra/1.webp", angle: "front34" },
+      { src: "/cars/toyota-gr-supra/2.webp", angle: "side" },
+      { src: "/cars/toyota-gr-supra/3.webp", angle: "rear34" },
+      { src: "/cars/toyota-gr-supra/4.webp", angle: "front" },
+      { src: "/cars/toyota-gr-supra/5.webp", angle: "rear" },
+      { src: "/cars/toyota-gr-supra/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/toyota-gr-supra/stage.webp",
     // The car in the home hero photo
     featured: true,
   },
@@ -116,7 +132,15 @@ export const cars: Car[] = [
       ka: "სიმძლავრე, კომფორტი და სივრცე. ლუქს ჯიპი საქართველოს ყველა გზისთვის.",
       ru: "Мощность, комфорт и простор. Люксовый внедорожник для любых дорог Грузии.",
     },
-    ...placeholder("bmw-x5-xdrive40i"),
+    photos: [
+      { src: "/cars/bmw-x5-xdrive40i/1.webp", angle: "front34" },
+      { src: "/cars/bmw-x5-xdrive40i/2.webp", angle: "side" },
+      { src: "/cars/bmw-x5-xdrive40i/3.webp", angle: "rear34" },
+      { src: "/cars/bmw-x5-xdrive40i/4.webp", angle: "front" },
+      { src: "/cars/bmw-x5-xdrive40i/5.webp", angle: "rear" },
+      { src: "/cars/bmw-x5-xdrive40i/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/bmw-x5-xdrive40i/stage.webp",
     featured: false,
   },
   {
@@ -135,7 +159,15 @@ export const cars: Car[] = [
       ka: "V8 გრან-ტურიზმო. 530 ც.ძ. სუფთა ელეგანტურობა.",
       ru: "Гран-туризмо с V8. 530 л.с. чистой элегантности.",
     },
-    ...placeholder("bmw-m850i-gran-coupe"),
+    photos: [
+      { src: "/cars/bmw-m850i-gran-coupe/1.webp", angle: "front34" },
+      { src: "/cars/bmw-m850i-gran-coupe/2.webp", angle: "side" },
+      { src: "/cars/bmw-m850i-gran-coupe/3.webp", angle: "rear34" },
+      { src: "/cars/bmw-m850i-gran-coupe/4.webp", angle: "front" },
+      { src: "/cars/bmw-m850i-gran-coupe/5.webp", angle: "rear" },
+      { src: "/cars/bmw-m850i-gran-coupe/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/bmw-m850i-gran-coupe/stage.webp",
     featured: false,
   },
   {
@@ -154,7 +186,15 @@ export const cars: Car[] = [
       ka: "კუპეს სპორტული ხაზები და ჯიპის თავდაჯერებულობა. აგრესიული M Sport იერი.",
       ru: "Спортивный силуэт купе и уверенность внедорожника. Агрессивный облик M Sport.",
     },
-    ...placeholder("bmw-x6-xdrive40i-m-sport"),
+    photos: [
+      { src: "/cars/bmw-x6-xdrive40i-m-sport/1.webp", angle: "front34" },
+      { src: "/cars/bmw-x6-xdrive40i-m-sport/2.webp", angle: "side" },
+      { src: "/cars/bmw-x6-xdrive40i-m-sport/3.webp", angle: "rear34" },
+      { src: "/cars/bmw-x6-xdrive40i-m-sport/4.webp", angle: "front" },
+      { src: "/cars/bmw-x6-xdrive40i-m-sport/5.webp", angle: "rear" },
+      { src: "/cars/bmw-x6-xdrive40i-m-sport/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/bmw-x6-xdrive40i-m-sport/stage.webp",
     featured: false,
   },
   {
@@ -174,7 +214,15 @@ export const cars: Car[] = [
       ka: "585 ც.ძ. ჯიპში. ოჯახური ზომა, სუპერქარის სიჩქარე.",
       ru: "585 л.с. во внедорожнике. Семейный размер, скорость суперкара.",
     },
-    ...placeholder("mercedes-amg-gle-63-s-coupe"),
+    photos: [
+      { src: "/cars/mercedes-amg-gle-63-s-coupe/1.webp", angle: "front34" },
+      { src: "/cars/mercedes-amg-gle-63-s-coupe/2.webp", angle: "side" },
+      { src: "/cars/mercedes-amg-gle-63-s-coupe/3.webp", angle: "rear34" },
+      { src: "/cars/mercedes-amg-gle-63-s-coupe/4.webp", angle: "front" },
+      { src: "/cars/mercedes-amg-gle-63-s-coupe/5.webp", angle: "rear" },
+      { src: "/cars/mercedes-amg-gle-63-s-coupe/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/mercedes-amg-gle-63-s-coupe/stage.webp",
     featured: false,
   },
   {
@@ -193,7 +241,15 @@ export const cars: Car[] = [
       ka: "V8-ის ცოცხალი ხმა და კლასიკური Corvette-ის სული.",
       ru: "Необузданный звук V8 и классическая душа Corvette.",
     },
-    ...placeholder("chevrolet-corvette-c7-stingray"),
+    photos: [
+      { src: "/cars/chevrolet-corvette-c7-stingray/1.webp", angle: "front34" },
+      { src: "/cars/chevrolet-corvette-c7-stingray/2.webp", angle: "side" },
+      { src: "/cars/chevrolet-corvette-c7-stingray/3.webp", angle: "rear34" },
+      { src: "/cars/chevrolet-corvette-c7-stingray/4.webp", angle: "front" },
+      { src: "/cars/chevrolet-corvette-c7-stingray/5.webp", angle: "rear" },
+      { src: "/cars/chevrolet-corvette-c7-stingray/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/chevrolet-corvette-c7-stingray/stage.webp",
     featured: false,
   },
   {
@@ -212,7 +268,15 @@ export const cars: Car[] = [
       ka: "მქრქალი შავი და AMG-ის ძალა. სუფთა ხასიათი.",
       ru: "Матовый чёрный и мощь AMG. Чистый характер.",
     },
-    ...placeholder("mercedes-amg-gt-43-4-door-coupe"),
+    photos: [
+      { src: "/cars/mercedes-amg-gt-43-4-door-coupe/1.webp", angle: "front34" },
+      { src: "/cars/mercedes-amg-gt-43-4-door-coupe/2.webp", angle: "side" },
+      { src: "/cars/mercedes-amg-gt-43-4-door-coupe/3.webp", angle: "rear34" },
+      { src: "/cars/mercedes-amg-gt-43-4-door-coupe/4.webp", angle: "front" },
+      { src: "/cars/mercedes-amg-gt-43-4-door-coupe/5.webp", angle: "rear" },
+      { src: "/cars/mercedes-amg-gt-43-4-door-coupe/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/mercedes-amg-gt-43-4-door-coupe/stage.webp",
     featured: false,
   },
   {
@@ -231,7 +295,15 @@ export const cars: Car[] = [
       ka: "ბიზნეს-კლასის ფუფუნება. ჩადი ადგილზე, როგორც VIP.",
       ru: "Роскошь бизнес-класса. Приезжайте как VIP.",
     },
-    ...placeholder("mercedes-benz-s-350-d"),
+    photos: [
+      { src: "/cars/mercedes-benz-s-350-d/1.webp", angle: "front34" },
+      { src: "/cars/mercedes-benz-s-350-d/2.webp", angle: "side" },
+      { src: "/cars/mercedes-benz-s-350-d/3.webp", angle: "rear34" },
+      { src: "/cars/mercedes-benz-s-350-d/4.webp", angle: "front" },
+      { src: "/cars/mercedes-benz-s-350-d/5.webp", angle: "rear" },
+      { src: "/cars/mercedes-benz-s-350-d/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/mercedes-benz-s-350-d/stage.webp",
     featured: false,
   },
   {
@@ -250,7 +322,15 @@ export const cars: Car[] = [
       ka: "კუპეს სტილი, სედანის კომფორტი. ელეგანტურობა სპორტული გულით.",
       ru: "Стиль купе, комфорт седана. Элегантность со спортивным сердцем.",
     },
-    ...placeholder("mercedes-benz-cls-450-4matic"),
+    photos: [
+      { src: "/cars/mercedes-benz-cls-450-4matic/1.webp", angle: "front34" },
+      { src: "/cars/mercedes-benz-cls-450-4matic/2.webp", angle: "side" },
+      { src: "/cars/mercedes-benz-cls-450-4matic/3.webp", angle: "rear34" },
+      { src: "/cars/mercedes-benz-cls-450-4matic/4.webp", angle: "front" },
+      { src: "/cars/mercedes-benz-cls-450-4matic/5.webp", angle: "rear" },
+      { src: "/cars/mercedes-benz-cls-450-4matic/6.webp", angle: "top34" },
+    ],
+    stage: "/cars/mercedes-benz-cls-450-4matic/stage.webp",
     featured: false,
   },
 ];

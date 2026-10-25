@@ -35,7 +35,7 @@ export default function CarCard({ car }: { car: Car }) {
           </>
         ) : (
           <Image
-            src={car.photos[0]}
+            src={car.photos[0].src}
             alt={`${car.brand} ${car.model}`}
             fill
             sizes={sizes}

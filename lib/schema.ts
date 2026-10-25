@@ -90,7 +90,7 @@ export function autoRentalSchema(locale: Locale, description: string, labels: Ca
         },
         accelerationTime: { "@type": "QuantitativeValue", value: car.specs.acceleration, unitCode: "SEC" },
         speed: { "@type": "QuantitativeValue", maxValue: car.specs.topSpeed, unitCode: "KMH" },
-        image: absoluteUrl(car.photos[0]),
+        image: absoluteUrl(car.photos[0].src),
       },
       priceSpecification: {
         "@type": "UnitPriceSpecification",

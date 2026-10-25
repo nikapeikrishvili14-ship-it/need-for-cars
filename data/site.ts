@@ -89,6 +89,11 @@ export type SiteConfig = {
     imageSize?: { width: number; height: number };
     /** Where the car begins, as a share of the photo's width from the left (0.31 = 31%). The text stays left of it. */
     carStart?: number;
+    /**
+     * The car's horizontal centre as a share of the photo's width (0.6 = 60%).
+     * Phones and portrait tablets (text below the photo) shift the photo so the car is centred.
+     */
+    carCenter?: number;
     /** Slug of the fleet car in the photo (data/cars.ts), used for its description */
     car?: string;
   };
@@ -419,6 +424,7 @@ export const site: SiteConfig = {
     image: "/hero/hero-c8.jpg",
     imageSize: { width: 2750, height: 1536 },
     carStart: 0.44,
+    carCenter: 0.6,
     car: "chevrolet-corvette-c8-stingray",
   },
   // TODO(owner): add real customer reviews. The home page shows a

@@ -147,8 +147,20 @@ function webpSrcSet(src: string): string {
 
 // How wide the photo is drawn, matching the layout below:
 // phones crop the empty sides (5:4 box → photo ≈ 143% of the screen width),
-// tablets a little (16:10 box → ≈ 112%), large screens show it whole.
-const PHOTO_SIZES = "(min-width: 1280px) 100vw, (min-width: 640px) 112vw, 143vw";
+// portrait tablets (4:3 box → ≈ 134%), small laptops a little (16:10 box → ≈ 112%),
+// large screens show it whole.
+const PHOTO_SIZES = "(min-width: 1280px) 100vw, (min-width: 1024px) 112vw, (min-width: 640px) 134vw, 143vw";
+
+/**
+ * object-position that puts the car (centre at `carCenter` of the photo's width)
+ * in the middle of a box of shape `boxRatio`, as far as the cropped-off width allows.
+ */
+function focusOn(carCenter: number, photoRatio: number, boxRatio: number): string {
+  const scale = photoRatio / boxRatio; // drawn photo width ÷ box width
+  if (scale <= 1) return "50% 50%";
+  const x = Math.min(1, Math.max(0, (carCenter * scale - 0.5) / (scale - 1)));
+  return `${(x * 100).toFixed(1)}% 50%`;
+}
 
 /**
  * The owner's hero photo, car in the middle, lamp at the top.
@@ -159,7 +171,8 @@ const PHOTO_SIZES = "(min-width: 1280px) 100vw, (min-width: 640px) 112vw, 143vw"
  * column ends where the car begins (site.hero.carStart), so it never covers it.
  *
  * Phones and tablets: the photo on top (only empty wall cropped from the
- * sides, the whole car visible), headline and buttons below it.
+ * sides, the whole car visible), headline and buttons below it. Below lg the
+ * photo shifts so the car (site.hero.carCenter) sits in the middle of the screen.
  */
 function PhotoHero({
   src,
@@ -180,6 +193,7 @@ function PhotoHero({
   const { width, height } = site.hero.imageSize ?? { width: 16, height: 9 };
   const ratio = width / height;
   const carStart = site.hero.carStart ?? 0.3;
+  const carCenter = site.hero.carCenter ?? 0.5;
   const srcSet = webpSrcSet(src);
 
   // First thing on screen: fetch it early, at high priority
@@ -203,6 +217,9 @@ function PhotoHero({
     "--pad": "clamp(2rem, 4vw, 5rem)",
     "--car-x": `calc((100vw - var(--photo-w)) / 2 + var(--photo-w) * ${carStart})`,
     "--text-w": "calc(var(--car-x) - var(--pad) - 2.5rem)",
+    // Phones (5:4 box) and portrait tablets (4:3 box): car centred
+    "--pos-phone": focusOn(carCenter, ratio, 5 / 4),
+    "--pos-tablet": focusOn(carCenter, ratio, 4 / 3),
   } as React.CSSProperties;
 
   const titleSize = georgian
@@ -211,8 +228,9 @@ function PhotoHero({
 
   return (
     <section style={vars} className="relative isolate overflow-hidden bg-night xl:h-(--hero-h)">
-      {/* Tablets: at most 72svh tall (16:10 → 115.2svh wide), so text still fits below */}
-      <div className="relative mx-auto aspect-5/4 w-full sm:aspect-16/10 sm:max-w-[115.2svh] xl:absolute xl:inset-y-0 xl:left-1/2 xl:aspect-auto xl:w-(--photo-w) xl:max-w-none xl:-translate-x-1/2">
+      {/* Tablets: at most 72svh tall (4:3 → 96svh wide, 16:10 → 115.2svh wide), so text still fits below.
+          4:3 below lg leaves enough cropped width to centre a car that stands off-centre. */}
+      <div className="relative mx-auto aspect-5/4 w-full sm:aspect-4/3 sm:max-w-[96svh] lg:aspect-16/10 lg:max-w-[115.2svh] xl:absolute xl:inset-y-0 xl:left-1/2 xl:aspect-auto xl:w-(--photo-w) xl:max-w-none xl:-translate-x-1/2">
         <picture>
           {srcSet && <source type="image/webp" srcSet={srcSet} sizes={PHOTO_SIZES} />}
           <img
@@ -222,7 +240,7 @@ function PhotoHero({
             height={height}
             fetchPriority="high"
             decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover object-(--pos-phone) sm:object-(--pos-tablet) lg:object-center"
           />
         </picture>
         {/* Edges melt into the base tone: floor at the bottom, walls at the sides */}

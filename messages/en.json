@@ -59,7 +59,8 @@
     "explore": "Explore",
     "contact": "Contact",
     "hours": "Working hours",
-    "rights": "© {year} Need For Cars. All rights reserved."
+    "rights": "© {year} Need For Cars. All rights reserved.",
+    "credit": "Website by <link>GN Scales</link>"
   },
   "whatsapp": {
     "label": "Chat with us on WhatsApp"

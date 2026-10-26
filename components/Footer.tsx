@@ -4,6 +4,8 @@ import type { Locale } from "@/i18n/routing";
 import NavLinks from "./NavLinks";
 import Logo from "./Logo";
 
+const AGENCY_URL = "https://gnscales.com";
+
 export default async function Footer() {
   const t = await getTranslations("footer");
   const locale = (await getLocale()) as Locale;
@@ -46,9 +48,29 @@ export default async function Footer() {
       </div>
 
       <div className="border-t border-line">
-        <p className="mx-auto max-w-7xl px-4 py-6 text-xs text-muted lg:px-8">
-          {t("rights", { year: new Date().getFullYear() })}
-        </p>
+        {/* Phones: credit under the copyright; wider screens: on the right.
+            The right padding keeps both clear of the floating WhatsApp button
+            (6rem from the screen edge), shrinking back to 2rem on very wide screens. */}
+        <div
+          className="mx-auto flex max-w-7xl flex-col gap-1.5 py-6 pl-4 text-xs text-muted sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:pl-8"
+          style={{ paddingRight: "max(2rem, calc(6rem - max(0px, (100vw - 80rem) / 2)))" }}
+        >
+          <p>{t("rights", { year: new Date().getFullYear() })}</p>
+          <p>
+            {t.rich("credit", {
+              link: (chunks) => (
+                <a
+                  href={AGENCY_URL}
+                  target="_blank"
+                  rel="noopener"
+                  className="text-fg/80 transition-colors hover:text-accent"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+          </p>
+        </div>
       </div>
     </footer>
   );

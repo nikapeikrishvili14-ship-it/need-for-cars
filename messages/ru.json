@@ -59,7 +59,8 @@
     "explore": "Разделы",
     "contact": "Контакты",
     "hours": "Часы работы",
-    "rights": "© {year} Need For Cars. Все права защищены."
+    "rights": "© {year} Need For Cars. Все права защищены.",
+    "credit": "Сайт разработан <link>GN Scales</link>"
   },
   "whatsapp": {
     "label": "Написать нам в WhatsApp"

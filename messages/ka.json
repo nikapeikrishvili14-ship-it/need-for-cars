@@ -59,7 +59,8 @@
     "explore": "გვერდები",
     "contact": "კონტაქტი",
     "hours": "სამუშაო საათები",
-    "rights": "© {year} Need For Cars. ყველა უფლება დაცულია."
+    "rights": "© {year} Need For Cars. ყველა უფლება დაცულია.",
+    "credit": "ვებსაიტი: <link>GN Scales</link>"
   },
   "whatsapp": {
     "label": "მოგვწერეთ WhatsApp-ზე"
